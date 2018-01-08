@@ -7,11 +7,11 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.kush.lib.service.api.Identifier;
 import com.kush.tripper.itinerary.Itinerary;
 import com.kush.tripper.location.Location;
 import com.kush.tripper.place.Place;
 import com.kush.tripper.trip.Trip;
+import com.kush.utils.id.Identifier;
 
 public class SampleTripperClientE2E {
 
