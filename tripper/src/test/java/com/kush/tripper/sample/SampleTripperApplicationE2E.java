@@ -1,19 +1,21 @@
 package com.kush.tripper.sample;
 
 import static java.util.Arrays.asList;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import com.kush.lib.service.client.api.ApplicationClient;
 import com.kush.lib.service.client.api.ConnectionSpecification;
+import com.kush.lib.service.client.api.ServiceInvoker;
 import com.kush.tripper.itinerary.Itinerary;
 import com.kush.tripper.location.Location;
 import com.kush.tripper.place.Place;
@@ -28,17 +30,24 @@ public class SampleTripperApplicationE2E {
     private ApplicationLocator locator;
     @Mock
     private TripperItineraryView itineraryView;
+    @Mock
+    private ServiceInvoker serviceInvoker;
 
     private SampleTripperApplication application;
 
     @Before
     public void setup() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        initMocks(this);
+        when(connSpec.getServiceInvoker()).thenReturn(serviceInvoker);
+        Identifier[] mockIds = { mock(Identifier.class) };
+        when(serviceInvoker.invoke("Sample Tripper Application Service", "getAllTrips")).thenReturn(mockIds);
+
+        Executor executor = Executors.newSingleThreadExecutor();
         ApplicationClient client = new ApplicationClient();
         client.connect(connSpec);
-        Executor executor = Executors.newSingleThreadExecutor();
         client.activateServiceClient(SampleTripperUserServiceClient.class, executor);
         client.activateServiceClient(SampleTripperApplicationServiceClient.class, executor);
+
         application = new SampleTripperApplication(client, locator, itineraryView);
     }
 
@@ -70,8 +79,8 @@ public class SampleTripperApplicationE2E {
         application.logout();
 
         application.login("testuser1", "testpwd1");
-        List<Identifier> allTrips = application.getAllTrips();
-        Identifier savedLaddakhTripId = allTrips.iterator().next();
+        Identifier[] allTrips = application.getAllTrips();
+        Identifier savedLaddakhTripId = allTrips[0];
         Itinerary savedItineraryLaddakh = application.getItinerary(savedLaddakhTripId);
         application.displayItinerary(savedItineraryLaddakh);
 

@@ -1,7 +1,5 @@
 package com.kush.tripper.sample;
 
-import java.util.List;
-
 import com.kush.lib.service.client.api.ApplicationClient;
 import com.kush.lib.service.client.api.Response;
 import com.kush.lib.service.client.api.ServiceClientProvider;
@@ -68,9 +66,9 @@ public class SampleTripperApplication {
         itineraryView.show(itinerary);
     }
 
-    public List<Identifier> getAllTrips() throws Exception {
+    public Identifier[] getAllTrips() throws Exception {
         SampleTripperApplicationServiceClient appServiceClient = getSampleTripperApplicationServiceClient();
-        Response<List<Identifier>> response = appServiceClient.getAllTrips();
+        Response<Identifier[]> response = appServiceClient.getAllTrips();
         return response.getResult();
     }
 

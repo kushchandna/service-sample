@@ -4,42 +4,23 @@ import java.util.concurrent.Executor;
 
 import com.kush.lib.service.client.api.Response;
 import com.kush.lib.service.client.api.ServiceClient;
-import com.kush.lib.service.client.api.ServiceFailedException;
-import com.kush.lib.service.client.api.ServiceTask;
+import com.kush.lib.service.client.api.ServiceInvoker;
 
 public class SampleTripperUserServiceClient extends ServiceClient {
 
-    public SampleTripperUserServiceClient(Executor executor) {
-        super(executor);
+    public SampleTripperUserServiceClient(Executor executor, ServiceInvoker serviceInvoker) {
+        super(executor, serviceInvoker, "Sample Tripper User Service");
     }
 
     public Response<Void> registerUser(String username, String password) {
-        return invoke(new ServiceTask<Void>() {
-
-            @Override
-            public Void execute() throws ServiceFailedException {
-                return null;
-            }
-        });
+        return invoke(Void.class, "registerUser", username, password);
     }
 
     public Response<Void> login(String username, String password) {
-        return invoke(new ServiceTask<Void>() {
-
-            @Override
-            public Void execute() throws ServiceFailedException {
-                return null;
-            }
-        });
+        return invoke(Void.class, "login", username, password);
     }
 
     public Response<Void> logout() {
-        return invoke(new ServiceTask<Void>() {
-
-            @Override
-            public Void execute() throws ServiceFailedException {
-                return null;
-            }
-        });
+        return invoke(Void.class, "logout");
     }
 }
