@@ -1,4 +1,4 @@
-package com.kush.tripper.sample;
+package com.kush.tripper.sample.client;
 
 import java.util.concurrent.Executor;
 

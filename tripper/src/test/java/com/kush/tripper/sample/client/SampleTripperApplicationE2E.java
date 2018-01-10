@@ -1,4 +1,4 @@
-package com.kush.tripper.sample;
+package com.kush.tripper.sample.client;
 
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.mock;

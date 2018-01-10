@@ -1,4 +1,4 @@
-package com.kush.tripper.sample;
+package com.kush.tripper.sample.client;
 
 import com.kush.lib.service.client.api.ApplicationClient;
 import com.kush.lib.service.client.api.Response;
