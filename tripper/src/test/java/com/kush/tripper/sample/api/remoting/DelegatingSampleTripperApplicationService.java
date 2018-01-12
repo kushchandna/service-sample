@@ -1,6 +1,4 @@
-package com.kush.tripper.sample.server;
-
-import static com.kush.utils.id.Identifier.id;
+package com.kush.tripper.sample.api.remoting;
 
 import com.kush.lib.service.server.api.BaseService;
 import com.kush.tripper.sample.api.SampleTripperApplicationServiceApi;
@@ -9,29 +7,31 @@ import com.kush.tripper.sample.api.types.Place;
 import com.kush.tripper.sample.api.types.Trip;
 import com.kush.utils.id.Identifier;
 
-public class SampleTripperApplicationService extends BaseService implements SampleTripperApplicationServiceApi {
+public class DelegatingSampleTripperApplicationService extends BaseService implements SampleTripperApplicationServiceApi {
+
+    private final SampleTripperApplicationServiceApi delegate;
+
+    public DelegatingSampleTripperApplicationService(SampleTripperApplicationServiceApi delegate) {
+        this.delegate = delegate;
+    }
 
     @Override
     public Identifier saveTrip(Trip trip) {
-        return id("Random ID");
+        return delegate.saveTrip(trip);
     }
 
     @Override
     public Place findPlace(String placeName) {
-        return new Place() {
-        };
+        return delegate.findPlace(placeName);
     }
 
     @Override
     public Itinerary getItinerary(Identifier id) {
-        return new Itinerary() {
-        };
+        return delegate.getItinerary(id);
     }
 
     @Override
     public Identifier[] getAllTrips() {
-        Identifier[] ids = new Identifier[1];
-        ids[0] = id("Random ID");
-        return ids;
+        return delegate.getAllTrips();
     }
 }

@@ -1,6 +1,6 @@
 package com.kush.tripper.sample.client;
 
-import com.kush.tripper.itinerary.Itinerary;
+import com.kush.tripper.sample.api.types.Itinerary;
 
 public class TripperItineraryView {
 

@@ -1,7 +1,7 @@
-package com.kush.tripper.sample.client;
+package com.kush.tripper.sample;
 
+import static com.kush.utils.id.Identifier.id;
 import static java.util.Arrays.asList;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -15,11 +15,20 @@ import org.mockito.Mock;
 
 import com.kush.lib.service.client.api.ApplicationClient;
 import com.kush.lib.service.client.api.ConnectionSpecification;
-import com.kush.lib.service.client.api.ServiceInvoker;
-import com.kush.tripper.itinerary.Itinerary;
+import com.kush.lib.service.remoting.ServiceProvider;
 import com.kush.tripper.location.Location;
-import com.kush.tripper.place.Place;
-import com.kush.tripper.trip.Trip;
+import com.kush.tripper.sample.api.SampleTripperApplicationServiceApi;
+import com.kush.tripper.sample.api.SampleTripperUserServiceApi;
+import com.kush.tripper.sample.api.types.Itinerary;
+import com.kush.tripper.sample.api.types.Place;
+import com.kush.tripper.sample.api.types.Trip;
+import com.kush.tripper.sample.client.ApplicationLocator;
+import com.kush.tripper.sample.client.SampleTripperApplicationServiceClient;
+import com.kush.tripper.sample.client.SampleTripperClient;
+import com.kush.tripper.sample.client.SampleTripperUserServiceClient;
+import com.kush.tripper.sample.client.TripperItineraryView;
+import com.kush.tripper.sample.server.SampleTripperApplicationService;
+import com.kush.tripper.sample.server.SampleTripperUserService;
 import com.kush.utils.id.Identifier;
 
 public class SampleTripperApplicationE2E {
@@ -27,28 +36,35 @@ public class SampleTripperApplicationE2E {
     @Mock
     private ConnectionSpecification connSpec;
     @Mock
+    private ServiceProvider serviceProvider;
+    @Mock
     private ApplicationLocator locator;
     @Mock
     private TripperItineraryView itineraryView;
     @Mock
-    private ServiceInvoker serviceInvoker;
+    private SampleTripperUserService userService;
+    @Mock
+    private SampleTripperApplicationService applicationService;
 
-    private SampleTripperApplication application;
+    private SampleTripperClient application;
 
     @Before
     public void setup() throws Exception {
         initMocks(this);
-        when(connSpec.getServiceInvoker()).thenReturn(serviceInvoker);
-        Identifier[] mockIds = { mock(Identifier.class) };
-        when(serviceInvoker.invoke("Sample Tripper Application Service", "getAllTrips")).thenReturn(mockIds);
+
+        when(connSpec.getRemoteServiceProvider()).thenReturn(serviceProvider);
+        when(serviceProvider.getService(SampleTripperUserServiceApi.class)).thenReturn(userService);
+        when(serviceProvider.getService(SampleTripperApplicationServiceApi.class)).thenReturn(applicationService);
+        when(applicationService.getAllTrips()).thenReturn(new Identifier[] { id("Random Id") });
 
         Executor executor = Executors.newSingleThreadExecutor();
         ApplicationClient client = new ApplicationClient();
         client.connect(connSpec);
-        client.activateServiceClient(SampleTripperUserServiceClient.class, executor);
-        client.activateServiceClient(SampleTripperApplicationServiceClient.class, executor);
+        client.activateServiceClient(SampleTripperUserServiceClient.class, SampleTripperUserServiceApi.class, executor);
+        client.activateServiceClient(SampleTripperApplicationServiceClient.class, SampleTripperApplicationServiceApi.class,
+                executor);
 
-        application = new SampleTripperApplication(client, locator, itineraryView);
+        application = new SampleTripperClient(client, locator, itineraryView);
     }
 
     @Test

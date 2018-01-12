@@ -1,10 +1,9 @@
-package com.kush.tripper.trip;
+package com.kush.tripper.sample.api.types;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import com.kush.tripper.location.Location;
-import com.kush.tripper.place.Place;
 
 public class Trip {
 

@@ -3,19 +3,19 @@ package com.kush.tripper.sample.client;
 import com.kush.lib.service.client.api.ApplicationClient;
 import com.kush.lib.service.client.api.Response;
 import com.kush.lib.service.client.api.ServiceClientProvider;
-import com.kush.tripper.itinerary.Itinerary;
 import com.kush.tripper.location.Location;
-import com.kush.tripper.place.Place;
-import com.kush.tripper.trip.Trip;
+import com.kush.tripper.sample.api.types.Itinerary;
+import com.kush.tripper.sample.api.types.Place;
+import com.kush.tripper.sample.api.types.Trip;
 import com.kush.utils.id.Identifier;
 
-public class SampleTripperApplication {
+public class SampleTripperClient {
 
     private final ServiceClientProvider serviceClientProvider;
     private final ApplicationLocator locator;
     private final TripperItineraryView itineraryView;
 
-    public SampleTripperApplication(ApplicationClient applicationClient, ApplicationLocator locator,
+    public SampleTripperClient(ApplicationClient applicationClient, ApplicationLocator locator,
             TripperItineraryView itineraryView) {
         this.locator = locator;
         this.itineraryView = itineraryView;
