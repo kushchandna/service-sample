@@ -1,22 +1,15 @@
 package com.kush.tripper.sample.client;
 
-import java.util.concurrent.Executor;
-
 import com.kush.lib.service.client.api.Response;
 import com.kush.lib.service.client.api.ServiceClient;
 import com.kush.lib.service.client.api.ServiceFailedException;
 import com.kush.lib.service.client.api.ServiceTask;
-import com.kush.tripper.sample.api.SampleTripperApplicationServiceApi;
-import com.kush.tripper.sample.api.types.Itinerary;
-import com.kush.tripper.sample.api.types.Place;
-import com.kush.tripper.sample.api.types.Trip;
+import com.kush.tripper.itinerary.Itinerary;
+import com.kush.tripper.place.Place;
+import com.kush.tripper.trip.Trip;
 import com.kush.utils.id.Identifier;
 
 public class SampleTripperApplicationServiceClient extends ServiceClient<SampleTripperApplicationServiceApi> {
-
-    public SampleTripperApplicationServiceClient(Executor executor, SampleTripperApplicationServiceApi serviceApi) {
-        super(executor, serviceApi);
-    }
 
     public Response<Identifier> saveTrip(Trip trip) {
         return invoke(new ServiceTask<Identifier>() {
@@ -56,5 +49,10 @@ public class SampleTripperApplicationServiceClient extends ServiceClient<SampleT
                 return getService().getAllTrips();
             }
         });
+    }
+
+    @Override
+    protected Class<SampleTripperApplicationServiceApi> getServiceApiClass() {
+        return SampleTripperApplicationServiceApi.class;
     }
 }

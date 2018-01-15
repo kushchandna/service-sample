@@ -1,6 +1,6 @@
-package com.kush.tripper.sample.api;
+package com.kush.tripper.sample.client;
 
-import com.kush.lib.service.remoting.ServiceApi;
+import com.kush.lib.service.remoting.api.ServiceApi;
 
 public interface SampleTripperUserServiceApi extends ServiceApi {
 
@@ -9,5 +9,4 @@ public interface SampleTripperUserServiceApi extends ServiceApi {
     void login(String username, String password);
 
     void logout();
-
 }

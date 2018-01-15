@@ -1,4 +1,4 @@
-package com.kush.tripper.sample;
+package com.kush.tripper.sample.client;
 
 import static com.kush.utils.id.Identifier.id;
 import static java.util.Arrays.asList;
@@ -14,57 +14,49 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import com.kush.lib.service.client.api.ApplicationClient;
-import com.kush.lib.service.client.api.ConnectionSpecification;
-import com.kush.lib.service.remoting.ServiceProvider;
+import com.kush.lib.service.remoting.api.ConnectionSpecification;
+import com.kush.lib.service.remoting.api.RemoteServiceProvider;
+import com.kush.tripper.itinerary.Itinerary;
 import com.kush.tripper.location.Location;
-import com.kush.tripper.sample.api.SampleTripperApplicationServiceApi;
-import com.kush.tripper.sample.api.SampleTripperUserServiceApi;
-import com.kush.tripper.sample.api.types.Itinerary;
-import com.kush.tripper.sample.api.types.Place;
-import com.kush.tripper.sample.api.types.Trip;
-import com.kush.tripper.sample.client.ApplicationLocator;
-import com.kush.tripper.sample.client.SampleTripperApplicationServiceClient;
-import com.kush.tripper.sample.client.SampleTripperClient;
-import com.kush.tripper.sample.client.SampleTripperUserServiceClient;
-import com.kush.tripper.sample.client.TripperItineraryView;
-import com.kush.tripper.sample.server.SampleTripperApplicationService;
-import com.kush.tripper.sample.server.SampleTripperUserService;
+import com.kush.tripper.place.Place;
+import com.kush.tripper.trip.Trip;
 import com.kush.utils.id.Identifier;
 
 public class SampleTripperApplicationE2E {
 
+    private static final String SAMPLE_TRIPPER_APPLICATION_SERVICE = "Sample Tripper Application Service";
+    private static final String SAMPLE_TRIPPER_USER_SERVICE = "Sample Tripper User Service";
+
     @Mock
     private ConnectionSpecification connSpec;
-    @Mock
-    private ServiceProvider serviceProvider;
     @Mock
     private ApplicationLocator locator;
     @Mock
     private TripperItineraryView itineraryView;
     @Mock
-    private SampleTripperUserService userService;
+    private RemoteServiceProvider remoteServiceProvider;
     @Mock
-    private SampleTripperApplicationService applicationService;
+    private SampleTripperUserServiceApi sampleTripperUserService;
+    @Mock
+    private SampleTripperApplicationServiceApi sampleTripperApplicationService;
 
-    private SampleTripperClient application;
+    private SampleTripperApplication application;
 
     @Before
     public void setup() throws Exception {
         initMocks(this);
-
-        when(connSpec.getRemoteServiceProvider()).thenReturn(serviceProvider);
-        when(serviceProvider.getService(SampleTripperUserServiceApi.class)).thenReturn(userService);
-        when(serviceProvider.getService(SampleTripperApplicationServiceApi.class)).thenReturn(applicationService);
-        when(applicationService.getAllTrips()).thenReturn(new Identifier[] { id("Random Id") });
+        when(sampleTripperApplicationService.getAllTrips()).thenReturn(new Identifier[] { id("Some Id") });
+        when(connSpec.getServiceProvider()).thenReturn(remoteServiceProvider);
+        when(remoteServiceProvider.getService(SAMPLE_TRIPPER_USER_SERVICE)).thenReturn(sampleTripperUserService);
+        when(remoteServiceProvider.getService(SAMPLE_TRIPPER_APPLICATION_SERVICE)).thenReturn(sampleTripperApplicationService);
 
         Executor executor = Executors.newSingleThreadExecutor();
         ApplicationClient client = new ApplicationClient();
         client.connect(connSpec);
-        client.activateServiceClient(SampleTripperUserServiceClient.class, SampleTripperUserServiceApi.class, executor);
-        client.activateServiceClient(SampleTripperApplicationServiceClient.class, SampleTripperApplicationServiceApi.class,
-                executor);
+        client.activateServiceClient(SampleTripperUserServiceClient.class, SAMPLE_TRIPPER_USER_SERVICE, executor);
+        client.activateServiceClient(SampleTripperApplicationServiceClient.class, SAMPLE_TRIPPER_APPLICATION_SERVICE, executor);
 
-        application = new SampleTripperClient(client, locator, itineraryView);
+        application = new SampleTripperApplication(client, locator, itineraryView);
     }
 
     @Test

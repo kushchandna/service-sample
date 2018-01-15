@@ -3,19 +3,20 @@ package com.kush.tripper.sample.client;
 import com.kush.lib.service.client.api.ApplicationClient;
 import com.kush.lib.service.client.api.Response;
 import com.kush.lib.service.client.api.ServiceClientProvider;
+import com.kush.tripper.itinerary.Itinerary;
 import com.kush.tripper.location.Location;
-import com.kush.tripper.sample.api.types.Itinerary;
-import com.kush.tripper.sample.api.types.Place;
-import com.kush.tripper.sample.api.types.Trip;
+import com.kush.tripper.place.Place;
+import com.kush.tripper.trip.Trip;
+import com.kush.utils.exceptions.ObjectNotFoundException;
 import com.kush.utils.id.Identifier;
 
-public class SampleTripperClient {
+public class SampleTripperApplication {
 
     private final ServiceClientProvider serviceClientProvider;
     private final ApplicationLocator locator;
     private final TripperItineraryView itineraryView;
 
-    public SampleTripperClient(ApplicationClient applicationClient, ApplicationLocator locator,
+    public SampleTripperApplication(ApplicationClient applicationClient, ApplicationLocator locator,
             TripperItineraryView itineraryView) {
         this.locator = locator;
         this.itineraryView = itineraryView;
@@ -72,11 +73,11 @@ public class SampleTripperClient {
         return response.getResult();
     }
 
-    private SampleTripperApplicationServiceClient getSampleTripperApplicationServiceClient() {
+    private SampleTripperApplicationServiceClient getSampleTripperApplicationServiceClient() throws ObjectNotFoundException {
         return serviceClientProvider.getServiceClient(SampleTripperApplicationServiceClient.class);
     }
 
-    private SampleTripperUserServiceClient getSampleTripperUserServiceClient() {
+    private SampleTripperUserServiceClient getSampleTripperUserServiceClient() throws ObjectNotFoundException {
         return serviceClientProvider.getServiceClient(SampleTripperUserServiceClient.class);
     }
 }

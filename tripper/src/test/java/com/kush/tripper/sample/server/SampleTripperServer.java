@@ -3,15 +3,20 @@ package com.kush.tripper.sample.server;
 import com.kush.lib.service.server.api.ApplicationServer;
 import com.kush.lib.service.server.api.Context;
 import com.kush.lib.service.server.api.ContextBuilder;
+import com.kush.lib.service.server.api.ServiceInitializationFailedException;
 
 public class SampleTripperServer {
 
     public static void main(String[] args) {
-        Context context = ContextBuilder.create()
-            .build();
-        ApplicationServer server = new ApplicationServer(context);
+        ApplicationServer server = new ApplicationServer();
         server.registerService(SampleTripperUserService.class);
         server.registerService(SampleTripperApplicationService.class);
-        server.start();
+        Context context = ContextBuilder.create()
+            .build();
+        try {
+            server.start(context);
+        } catch (ServiceInitializationFailedException e) {
+            e.printStackTrace();
+        }
     }
 }
