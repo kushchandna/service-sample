@@ -1,7 +1,5 @@
 package com.kush.tripper.sample.client;
 
-import java.util.concurrent.Executor;
-
 import com.kush.lib.service.client.api.Response;
 import com.kush.lib.service.client.api.ServiceClient;
 import com.kush.lib.service.client.api.ServiceFailedException;
@@ -10,8 +8,8 @@ import com.kush.tripper.sample.api.SampleTripperUserServiceApi;
 
 public class SampleTripperUserServiceClient extends ServiceClient<SampleTripperUserServiceApi> {
 
-    public SampleTripperUserServiceClient(Executor executor, SampleTripperUserServiceApi serviceApi) {
-        super(executor, serviceApi);
+    public SampleTripperUserServiceClient() {
+        super("SampleTripperUserServiceClient", SampleTripperUserServiceApi.class);
     }
 
     public Response<Void> registerUser(String username, String password) {

@@ -15,7 +15,7 @@ import org.mockito.Mock;
 
 import com.kush.lib.service.client.api.ApplicationClient;
 import com.kush.lib.service.client.api.ConnectionSpecification;
-import com.kush.lib.service.remoting.ServiceProvider;
+import com.kush.lib.service.remoting.RemoteServiceProvider;
 import com.kush.tripper.location.Location;
 import com.kush.tripper.sample.api.SampleTripperApplicationServiceApi;
 import com.kush.tripper.sample.api.SampleTripperUserServiceApi;
@@ -27,8 +27,6 @@ import com.kush.tripper.sample.client.SampleTripperApplicationServiceClient;
 import com.kush.tripper.sample.client.SampleTripperClient;
 import com.kush.tripper.sample.client.SampleTripperUserServiceClient;
 import com.kush.tripper.sample.client.TripperItineraryView;
-import com.kush.tripper.sample.server.SampleTripperApplicationService;
-import com.kush.tripper.sample.server.SampleTripperUserService;
 import com.kush.utils.id.Identifier;
 
 public class SampleTripperApplicationE2E {
@@ -36,15 +34,15 @@ public class SampleTripperApplicationE2E {
     @Mock
     private ConnectionSpecification connSpec;
     @Mock
-    private ServiceProvider serviceProvider;
+    private RemoteServiceProvider serviceProvider;
     @Mock
     private ApplicationLocator locator;
     @Mock
     private TripperItineraryView itineraryView;
     @Mock
-    private SampleTripperUserService userService;
+    private SampleTripperUserServiceApi userService;
     @Mock
-    private SampleTripperApplicationService applicationService;
+    private SampleTripperApplicationServiceApi applicationService;
 
     private SampleTripperClient application;
 
@@ -53,16 +51,15 @@ public class SampleTripperApplicationE2E {
         initMocks(this);
 
         when(connSpec.getRemoteServiceProvider()).thenReturn(serviceProvider);
-        when(serviceProvider.getService(SampleTripperUserServiceApi.class)).thenReturn(userService);
-        when(serviceProvider.getService(SampleTripperApplicationServiceApi.class)).thenReturn(applicationService);
+        when(serviceProvider.getRemoteService("SampleTripperUserService")).thenReturn(userService);
+        when(serviceProvider.getRemoteService("SampleTripperApplicationService")).thenReturn(applicationService);
         when(applicationService.getAllTrips()).thenReturn(new Identifier[] { id("Random Id") });
 
         Executor executor = Executors.newSingleThreadExecutor();
         ApplicationClient client = new ApplicationClient();
         client.connect(connSpec);
-        client.activateServiceClient(SampleTripperUserServiceClient.class, SampleTripperUserServiceApi.class, executor);
-        client.activateServiceClient(SampleTripperApplicationServiceClient.class, SampleTripperApplicationServiceApi.class,
-                executor);
+        client.activateServiceClient(SampleTripperUserServiceClient.class, executor);
+        client.activateServiceClient(SampleTripperApplicationServiceClient.class, executor);
 
         application = new SampleTripperClient(client, locator, itineraryView);
     }
