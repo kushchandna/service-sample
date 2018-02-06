@@ -1,12 +1,12 @@
 package com.kush.tripper.sample.client;
 
-import com.kush.lib.service.client.api.Response;
 import com.kush.lib.service.client.api.ServiceClient;
-import com.kush.lib.service.client.api.ServiceFailedException;
-import com.kush.lib.service.client.api.ServiceTask;
 import com.kush.tripper.itinerary.Itinerary;
 import com.kush.tripper.place.Place;
 import com.kush.tripper.trip.Trip;
+import com.kush.utils.async.Response;
+import com.kush.utils.async.ServiceFailedException;
+import com.kush.utils.async.ServiceTask;
 import com.kush.utils.id.Identifier;
 
 public class SampleTripperApplicationServiceClient extends ServiceClient<SampleTripperApplicationServiceApi> {

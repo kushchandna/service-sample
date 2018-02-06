@@ -1,12 +1,12 @@
 package com.kush.tripper.sample.client;
 
 import com.kush.lib.service.client.api.ApplicationClient;
-import com.kush.lib.service.client.api.Response;
 import com.kush.lib.service.client.api.ServiceClientProvider;
 import com.kush.tripper.itinerary.Itinerary;
 import com.kush.tripper.location.Location;
 import com.kush.tripper.place.Place;
 import com.kush.tripper.trip.Trip;
+import com.kush.utils.async.Response;
 import com.kush.utils.exceptions.ObjectNotFoundException;
 import com.kush.utils.id.Identifier;
 
