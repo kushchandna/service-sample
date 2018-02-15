@@ -1,6 +1,5 @@
 package com.kush.tripper.sample.client;
 
-import static com.kush.utils.id.Identifier.id;
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -15,7 +14,7 @@ import org.mockito.Mock;
 
 import com.kush.lib.service.client.api.ApplicationClient;
 import com.kush.lib.service.remoting.api.ConnectionSpecification;
-import com.kush.lib.service.remoting.api.RemoteServiceProvider;
+import com.kush.lib.service.remoting.api.ServiceRequestResolver;
 import com.kush.tripper.itinerary.Itinerary;
 import com.kush.tripper.location.Location;
 import com.kush.tripper.place.Place;
@@ -34,21 +33,14 @@ public class SampleTripperApplicationE2E {
     @Mock
     private TripperItineraryView itineraryView;
     @Mock
-    private RemoteServiceProvider remoteServiceProvider;
-    @Mock
-    private SampleTripperUserServiceApi sampleTripperUserService;
-    @Mock
-    private SampleTripperApplicationServiceApi sampleTripperApplicationService;
+    private ServiceRequestResolver requestResolver;
 
     private SampleTripperApplication application;
 
     @Before
     public void setup() throws Exception {
         initMocks(this);
-        when(sampleTripperApplicationService.getAllTrips()).thenReturn(new Identifier[] { id("Some Id") });
-        when(connSpec.getServiceProvider()).thenReturn(remoteServiceProvider);
-        when(remoteServiceProvider.getService(SAMPLE_TRIPPER_USER_SERVICE)).thenReturn(sampleTripperUserService);
-        when(remoteServiceProvider.getService(SAMPLE_TRIPPER_APPLICATION_SERVICE)).thenReturn(sampleTripperApplicationService);
+        when(connSpec.getResolver()).thenReturn(requestResolver);
 
         Executor executor = Executors.newSingleThreadExecutor();
         ApplicationClient client = new ApplicationClient();
