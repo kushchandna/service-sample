@@ -4,7 +4,7 @@
 
 	<artifactId>tripper</artifactId>
 	<packaging>jar</packaging>
-
+	<groupId>com.kush.apps</groupId>
 	<name>tripper</name>
 	<url>http://maven.apache.org</url>
 
@@ -17,11 +17,21 @@
 		<artifactId>parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>com.kush.apps</groupId>
+	
 	<dependencies>
 		<dependency>
 			<groupId>com.kush</groupId>
 			<artifactId>service</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.kush</groupId>
+			<artifactId>service-client</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.kush</groupId>
+			<artifactId>service-remoting</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
