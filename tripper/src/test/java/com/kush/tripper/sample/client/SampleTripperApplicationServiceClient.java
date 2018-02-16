@@ -9,19 +9,23 @@ import com.kush.utils.id.Identifier;
 
 public class SampleTripperApplicationServiceClient extends ServiceClient {
 
+    public SampleTripperApplicationServiceClient() {
+        super("Sample Tripper Application Service");
+    }
+
     public Response<Identifier> saveTrip(Trip trip) {
-        return invoke("saveTrip", Identifier.class, trip);
+        return invoke("saveTrip", trip);
     }
 
     public Response<Place> findPlace(String placeName) {
-        return invoke("findPlace", Place.class, placeName);
+        return invoke("findPlace", placeName);
     }
 
     public Response<Itinerary> getItinerary(Identifier id) {
-        return invoke("getItinerary", Itinerary.class, id);
+        return invoke("getItinerary", id);
     }
 
     public Response<Identifier[]> getAllTrips() {
-        return invoke("getAllTrips", Identifier[].class);
+        return invoke("getAllTrips");
     }
 }

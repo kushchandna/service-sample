@@ -5,15 +5,19 @@ import com.kush.utils.async.Response;
 
 public class SampleTripperUserServiceClient extends ServiceClient {
 
+    public SampleTripperUserServiceClient() {
+        super("Sample Tripper User Service");
+    }
+
     public Response<Void> registerUser(String username, String password) {
-        return invoke("registerUser", Void.class, username, password);
+        return invoke("registerUser", username, password);
     }
 
     public Response<Void> login(String username, String password) {
-        return invoke("login", Void.class, username, password);
+        return invoke("login", username, password);
     }
 
     public Response<Void> logout() {
-        return invoke("logout", Void.class);
+        return invoke("logout");
     }
 }

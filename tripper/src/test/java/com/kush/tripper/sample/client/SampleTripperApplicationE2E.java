@@ -1,6 +1,9 @@
 package com.kush.tripper.sample.client;
 
+import static com.kush.utils.id.Identifier.id;
 import static java.util.Arrays.asList;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -14,7 +17,9 @@ import org.mockito.Mock;
 
 import com.kush.lib.service.client.api.ApplicationClient;
 import com.kush.lib.service.remoting.api.ConnectionSpecification;
+import com.kush.lib.service.remoting.api.ServiceRequest;
 import com.kush.lib.service.remoting.api.ServiceRequestResolver;
+import com.kush.lib.service.remoting.api.ServiceRequestResolver.ReturnType;
 import com.kush.tripper.itinerary.Itinerary;
 import com.kush.tripper.location.Location;
 import com.kush.tripper.place.Place;
@@ -22,9 +27,6 @@ import com.kush.tripper.trip.Trip;
 import com.kush.utils.id.Identifier;
 
 public class SampleTripperApplicationE2E {
-
-    private static final String SAMPLE_TRIPPER_APPLICATION_SERVICE = "Sample Tripper Application Service";
-    private static final String SAMPLE_TRIPPER_USER_SERVICE = "Sample Tripper User Service";
 
     @Mock
     private ConnectionSpecification connSpec;
@@ -38,15 +40,18 @@ public class SampleTripperApplicationE2E {
     private SampleTripperApplication application;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         initMocks(this);
         when(connSpec.getResolver()).thenReturn(requestResolver);
+        ServiceRequest request = new ServiceRequest("Sample Tripper Application Service", "getAllTrips");
+        when(requestResolver.resolve(eq(request), any(ReturnType.class))).thenReturn(new Identifier[] { id("Saved Trip") });
 
         Executor executor = Executors.newSingleThreadExecutor();
         ApplicationClient client = new ApplicationClient();
         client.connect(connSpec);
-        client.activateServiceClient(SampleTripperUserServiceClient.class, SAMPLE_TRIPPER_USER_SERVICE, executor);
-        client.activateServiceClient(SampleTripperApplicationServiceClient.class, SAMPLE_TRIPPER_APPLICATION_SERVICE, executor);
+        client.activateServiceClient(SampleTripperUserServiceClient.class, executor);
+        client.activateServiceClient(SampleTripperApplicationServiceClient.class, executor);
 
         application = new SampleTripperApplication(client, locator, itineraryView);
     }
