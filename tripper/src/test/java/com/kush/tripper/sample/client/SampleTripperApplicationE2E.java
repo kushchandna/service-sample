@@ -1,9 +1,8 @@
 package com.kush.tripper.sample.client;
 
-import static com.kush.lib.service.remoting.api.ServiceRequestResolver.ReturnType.type;
 import static com.kush.utils.id.Identifier.id;
 import static java.util.Arrays.asList;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -13,12 +12,16 @@ import java.util.concurrent.Executors;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.kush.lib.service.client.api.ApplicationClient;
-import com.kush.lib.service.remoting.api.ConnectionSpecification;
-import com.kush.lib.service.remoting.api.ServiceRequest;
-import com.kush.lib.service.remoting.api.ServiceRequestResolver;
+import com.kush.lib.service.remoting.ConnectionSpecification;
+import com.kush.lib.service.remoting.ServiceRequest;
+import com.kush.lib.service.remoting.ServiceRequestResolver;
 import com.kush.tripper.itinerary.Itinerary;
 import com.kush.tripper.location.Location;
 import com.kush.tripper.place.Place;
@@ -36,14 +39,26 @@ public class SampleTripperApplicationE2E {
     @Mock
     private ServiceRequestResolver requestResolver;
 
+    @Captor
+    private ArgumentCaptor<ServiceRequest<?>> requestCaptor;
+
     private SampleTripperApplication application;
 
     @Before
     public void setup() throws Exception {
         initMocks(this);
         when(connSpec.getResolver()).thenReturn(requestResolver);
-        ServiceRequest<Identifier[]> request = new ServiceRequest<>("Sample Tripper Application Service", "getAllTrips", type());
-        when(requestResolver.resolve(eq(request))).thenReturn(new Identifier[] { id("Saved Trip") });
+        doAnswer(new Answer<Identifier[]>() {
+
+            @Override
+            public Identifier[] answer(InvocationOnMock invocation) throws Throwable {
+                ServiceRequest<?> request = requestCaptor.getValue();
+                if (request.getMethodName().equals("getAllTrips")) {
+                    return new Identifier[] { id("Saved Trip") };
+                }
+                return null;
+            }
+        }).when(requestResolver).resolve(requestCaptor.capture());
 
         Executor executor = Executors.newSingleThreadExecutor();
         ApplicationClient client = new ApplicationClient();
