@@ -2,9 +2,9 @@ package com.kush.tripper.sample.server;
 
 import static com.kush.utils.id.Identifier.id;
 
-import com.kush.lib.service.server.api.BaseService;
-import com.kush.lib.service.server.api.annotations.Service;
-import com.kush.lib.service.server.api.annotations.ServiceMethod;
+import com.kush.lib.service.server.BaseService;
+import com.kush.lib.service.server.annotations.Service;
+import com.kush.lib.service.server.annotations.ServiceMethod;
 import com.kush.tripper.itinerary.Itinerary;
 import com.kush.tripper.place.Place;
 import com.kush.tripper.trip.Trip;

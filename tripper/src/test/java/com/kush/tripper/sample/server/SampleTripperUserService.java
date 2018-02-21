@@ -1,8 +1,8 @@
 package com.kush.tripper.sample.server;
 
-import com.kush.lib.service.server.api.BaseService;
-import com.kush.lib.service.server.api.annotations.Service;
-import com.kush.lib.service.server.api.annotations.ServiceMethod;
+import com.kush.lib.service.server.BaseService;
+import com.kush.lib.service.server.annotations.Service;
+import com.kush.lib.service.server.annotations.ServiceMethod;
 import com.kush.logger.Logger;
 import com.kush.logger.LoggerFactory;
 

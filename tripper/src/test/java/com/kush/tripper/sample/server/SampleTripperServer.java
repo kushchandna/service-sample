@@ -1,9 +1,9 @@
 package com.kush.tripper.sample.server;
 
-import com.kush.lib.service.server.api.ApplicationServer;
-import com.kush.lib.service.server.api.Context;
-import com.kush.lib.service.server.api.ContextBuilder;
-import com.kush.lib.service.server.api.ServiceInitializationFailedException;
+import com.kush.lib.service.server.ApplicationServer;
+import com.kush.lib.service.server.Context;
+import com.kush.lib.service.server.ContextBuilder;
+import com.kush.lib.service.server.ServiceInitializationFailedException;
 
 public class SampleTripperServer {
 
