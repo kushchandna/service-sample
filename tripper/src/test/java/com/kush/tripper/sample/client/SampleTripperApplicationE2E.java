@@ -40,7 +40,7 @@ public class SampleTripperApplicationE2E {
     private ServiceRequestResolver requestResolver;
 
     @Captor
-    private ArgumentCaptor<ServiceRequest<?>> requestCaptor;
+    private ArgumentCaptor<ServiceRequest> requestCaptor;
 
     private SampleTripperApplication application;
 
@@ -52,7 +52,7 @@ public class SampleTripperApplicationE2E {
 
             @Override
             public Identifier[] answer(InvocationOnMock invocation) throws Throwable {
-                ServiceRequest<?> request = requestCaptor.getValue();
+                ServiceRequest request = requestCaptor.getValue();
                 if (request.getMethodName().equals("getAllTrips")) {
                     return new Identifier[] { id("Saved Trip") };
                 }
