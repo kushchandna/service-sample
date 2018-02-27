@@ -22,7 +22,6 @@ import com.kush.lib.service.client.api.ApplicationClient;
 import com.kush.lib.service.remoting.ServiceRequest;
 import com.kush.lib.service.remoting.connect.ServiceConnection;
 import com.kush.lib.service.remoting.connect.ServiceConnectionFactory;
-import com.kush.lib.service.remoting.connect.ServiceConnectionSpecification;
 import com.kush.tripper.itinerary.Itinerary;
 import com.kush.tripper.location.Location;
 import com.kush.tripper.place.Place;
@@ -31,8 +30,6 @@ import com.kush.utils.id.Identifier;
 
 public class SampleTripperApplicationE2E {
 
-    @Mock
-    private ServiceConnectionSpecification connSpec;
     @Mock
     private ApplicationLocator locator;
     @Mock
