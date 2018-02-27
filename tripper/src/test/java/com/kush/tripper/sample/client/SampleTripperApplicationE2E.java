@@ -19,9 +19,10 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.kush.lib.service.client.api.ApplicationClient;
-import com.kush.lib.service.remoting.ConnectionSpecification;
 import com.kush.lib.service.remoting.ServiceRequest;
-import com.kush.lib.service.remoting.ServiceRequestResolver;
+import com.kush.lib.service.remoting.connect.ServiceConnection;
+import com.kush.lib.service.remoting.connect.ServiceConnectionFactory;
+import com.kush.lib.service.remoting.connect.ServiceConnectionSpecification;
 import com.kush.tripper.itinerary.Itinerary;
 import com.kush.tripper.location.Location;
 import com.kush.tripper.place.Place;
@@ -31,13 +32,15 @@ import com.kush.utils.id.Identifier;
 public class SampleTripperApplicationE2E {
 
     @Mock
-    private ConnectionSpecification connSpec;
+    private ServiceConnectionSpecification connSpec;
     @Mock
     private ApplicationLocator locator;
     @Mock
     private TripperItineraryView itineraryView;
     @Mock
-    private ServiceRequestResolver requestResolver;
+    private ServiceConnection connection;
+    @Mock
+    private ServiceConnectionFactory connFactory;
 
     @Captor
     private ArgumentCaptor<ServiceRequest> requestCaptor;
@@ -47,7 +50,7 @@ public class SampleTripperApplicationE2E {
     @Before
     public void setup() throws Exception {
         initMocks(this);
-        when(connSpec.getResolver()).thenReturn(requestResolver);
+        when(connFactory.createConnection()).thenReturn(connection);
         doAnswer(new Answer<Identifier[]>() {
 
             @Override
@@ -58,11 +61,11 @@ public class SampleTripperApplicationE2E {
                 }
                 return null;
             }
-        }).when(requestResolver).resolve(requestCaptor.capture());
+        }).when(connection).resolve(requestCaptor.capture());
 
         Executor executor = Executors.newSingleThreadExecutor();
         ApplicationClient client = new ApplicationClient();
-        client.connect(connSpec);
+        client.start(connFactory);
         client.activateServiceClient(SampleTripperUserServiceClient.class, executor);
         client.activateServiceClient(SampleTripperApplicationServiceClient.class, executor);
 
