@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 import com.kush.apps.tripper.api.Trip;
 import com.kush.apps.tripper.persistors.TripPersistor;
-import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.lib.service.remoting.ServiceRequestFailedException;
 import com.kush.lib.service.remoting.auth.User;
@@ -21,7 +20,7 @@ public class TripPlannerService extends BaseService {
     public Trip createTrip(String tripName) throws ServiceRequestFailedException {
         User currentUser = getCurrentUser();
         Trip trip = new Trip(currentUser.getId(), tripName);
-        Persistor<Trip> persistor = getPersistor(Trip.class);
+        TripPersistor persistor = getInstance(TripPersistor.class);
         try {
             return persistor.save(trip);
         } catch (PersistorOperationFailedException e) {

@@ -1,12 +1,13 @@
 package com.kush.apps.tripper.client;
 
-import java.util.List;
+import java.util.Iterator;
 
 import com.kush.apps.tripper.api.Trip;
 import com.kush.apps.tripper.serviceclients.TripPlannerServiceClient;
 import com.kush.lib.service.client.api.ServiceClientProvider;
 import com.kush.lib.service.client.api.session.LoginServiceClient;
 import com.kush.lib.service.remoting.auth.Credential;
+import com.kush.utils.async.Response;
 
 public class SampleTripperApplication {
 
@@ -36,7 +37,9 @@ public class SampleTripperApplication {
         return client.createTrip(tripName).getResult();
     }
 
-    public List<Trip> getCreatedTrips() {
-        return null;
+    public Iterator<Trip> getCreatedTrips() throws Exception {
+        TripPlannerServiceClient client = serviceClientProvider.getServiceClient(TripPlannerServiceClient.class);
+        Response<Iterator<Trip>> response = client.getCreatedTrips();
+        return response.getResult();
     }
 }

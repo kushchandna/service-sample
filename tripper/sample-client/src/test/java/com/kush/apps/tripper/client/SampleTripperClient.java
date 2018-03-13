@@ -1,5 +1,6 @@
 package com.kush.apps.tripper.client;
 
+import java.util.Iterator;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -44,9 +45,14 @@ public class SampleTripperClient {
         Credential credential2 = new PasswordBasedCredential("testusr2", "testpwd2".toCharArray());
         application.register(credential2);
         application.login(credential2);
+        Iterator<Trip> createdTrips = application.getCreatedTrips();
+        System.out.println(createdTrips.hasNext());
+        application.logout();
 
-        application.getCreatedTrips();
-
+        Credential credential3 = new PasswordBasedCredential("testusr1", "testpwd1".toCharArray());
+        application.login(credential3);
+        Iterator<Trip> createdTrips3 = application.getCreatedTrips();
+        System.out.println(createdTrips3.next().getTripName());
         application.logout();
     }
 }
