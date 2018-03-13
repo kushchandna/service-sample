@@ -19,8 +19,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.kush.apps</groupId>
-			<artifactId>tripper-client</artifactId>
+			<groupId>com.kush.apps.sample</groupId>
+			<artifactId>sample-tripper-client</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
@@ -32,8 +32,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.kush.apps</groupId>
-			<artifactId>tripper-client</artifactId>
+			<groupId>com.kush.apps.sample</groupId>
+			<artifactId>sample-tripper-client</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
