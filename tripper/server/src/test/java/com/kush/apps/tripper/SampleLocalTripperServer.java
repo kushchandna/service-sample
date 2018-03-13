@@ -1,6 +1,10 @@
 package com.kush.apps.tripper;
 
+import com.kush.apps.tripper.api.Trip;
+import com.kush.apps.tripper.persistors.DefaultTripPersistor;
+import com.kush.apps.tripper.persistors.TripPersistor;
 import com.kush.apps.tripper.services.TripPlannerService;
+import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
 import com.kush.lib.service.remoting.StartupFailedException;
 import com.kush.lib.service.server.ApplicationServer;
@@ -14,10 +18,20 @@ import com.kush.utils.id.SequentialIdGenerator;
 public class SampleLocalTripperServer {
 
     public void start() {
-        ApplicationServer server = new LocalApplicationServer();
+        ApplicationServer server = new LocalApplicationServer() {
+
+            @Override
+            protected void preStartup(Context context) {
+                super.preStartup(context);
+            }
+        };
         server.registerService(TripPlannerService.class);
+
+        Persistor<Trip> persistor = new InMemoryTripPersistor();
+        TripPersistor tripPersistor = new DefaultTripPersistor(persistor);
         Context context = ContextBuilder.create()
             .withPersistor(UserCredential.class, new InMemoryUserCredentialPersistor())
+            .withInstance(TripPersistor.class, tripPersistor)
             .build();
         try {
             server.start(context);
@@ -36,6 +50,18 @@ public class SampleLocalTripperServer {
         @Override
         protected UserCredential createPersistableObject(Identifier id, UserCredential reference) {
             return new UserCredential(id, reference.getUser(), reference.getCredential());
+        }
+    }
+
+    private static final class InMemoryTripPersistor extends InMemoryPersistor<Trip> {
+
+        private InMemoryTripPersistor() {
+            super(new SequentialIdGenerator());
+        }
+
+        @Override
+        protected Trip createPersistableObject(Identifier id, Trip reference) {
+            return new Trip(id, reference.getCreatedBy(), reference.getTripName());
         }
     }
 }

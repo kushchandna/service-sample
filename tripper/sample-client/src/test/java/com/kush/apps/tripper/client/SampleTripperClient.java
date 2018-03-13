@@ -33,11 +33,20 @@ public class SampleTripperClient {
         client.activateServiceClient(TripPlannerServiceClient.class, executor);
 
         SampleTripperApplication application = new SampleTripperApplication(client.getServiceClientProvider());
-        Credential credential = new PasswordBasedCredential("testusr1", "testpwd1".toCharArray());
-        application.register(credential);
-        application.login(credential);
+
+        Credential credential1 = new PasswordBasedCredential("testusr1", "testpwd1".toCharArray());
+        application.register(credential1);
+        application.login(credential1);
         Trip trip = application.createTrip("Trip to Jaipur");
         System.out.println(trip.getTripName());
+        application.logout();
+
+        Credential credential2 = new PasswordBasedCredential("testusr2", "testpwd2".toCharArray());
+        application.register(credential2);
+        application.login(credential2);
+
+        application.getCreatedTrips();
+
         application.logout();
     }
 }

@@ -1,5 +1,7 @@
 package com.kush.apps.tripper.client;
 
+import java.util.List;
+
 import com.kush.apps.tripper.api.Trip;
 import com.kush.apps.tripper.serviceclients.TripPlannerServiceClient;
 import com.kush.lib.service.client.api.ServiceClientProvider;
@@ -32,5 +34,9 @@ public class SampleTripperApplication {
     public Trip createTrip(String tripName) throws Exception {
         TripPlannerServiceClient client = serviceClientProvider.getServiceClient(TripPlannerServiceClient.class);
         return client.createTrip(tripName).getResult();
+    }
+
+    public List<Trip> getCreatedTrips() {
+        return null;
     }
 }
