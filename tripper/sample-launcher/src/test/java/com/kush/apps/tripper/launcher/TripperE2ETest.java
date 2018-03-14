@@ -1,10 +1,13 @@
 package com.kush.apps.tripper.launcher;
 
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,6 +19,7 @@ import com.kush.apps.tripper.SampleLocalTripperServer;
 import com.kush.apps.tripper.api.Trip;
 import com.kush.apps.tripper.client.SampleTripperApplication;
 import com.kush.apps.tripper.services.servicegen.generated.clients.TripPlannerServiceClient;
+import com.kush.lib.location.api.Place;
 import com.kush.lib.service.client.api.ApplicationClient;
 import com.kush.lib.service.remoting.auth.Credential;
 import com.kush.lib.service.remoting.auth.User;
@@ -93,11 +97,34 @@ public class TripperE2ETest {
         assertThat(user2CreatedTrips.hasNext(), is(equalTo(false)));
     }
 
+    @Test
+    public void addPlacesToCreatedTrip() throws Exception {
+        startSessionForTestUser();
+        Trip trip = application.createTrip("Test Trip");
+        assertThat(trip.getPlacesToVisit(), is(empty()));
+
+        Place place1 = application.findPlace("Place1");
+        Place place2 = application.findPlace("Place2");
+        application.addPlaces(trip.getId(), Arrays.asList(place1, place2));
+
+        Iterator<Trip> trips = application.getCreatedTrips();
+        Trip createdTrip = trips.next();
+        List<Place> savedPlacesToVisit = createdTrip.getPlacesToVisit();
+        savedPlacesToVisit.toString();
+    }
+
     private void logoutSilently() {
         try {
             application.logout();
         } catch (Exception e) {
             // eat exception
         }
+    }
+
+    private User startSessionForTestUser() throws Exception {
+        Credential cred = new PasswordBasedCredential("testusr", "testpwd".toCharArray());
+        User user = application.register(cred);
+        application.login(cred);
+        return user;
     }
 }

@@ -1,10 +1,12 @@
 package com.kush.apps.tripper.persistors;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import com.kush.apps.tripper.api.Trip;
+import com.kush.lib.location.api.Place;
 import com.kush.lib.persistence.api.DelegatingPersistor;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
@@ -14,6 +16,12 @@ public class DefaultTripPersistor extends DelegatingPersistor<Trip> implements T
 
     public DefaultTripPersistor(Persistor<Trip> delegate) {
         super(delegate);
+    }
+
+    @Override
+    public Trip createTrip(Identifier createdBy, String tripName) throws PersistorOperationFailedException {
+        Trip trip = new Trip(createdBy, tripName, Collections.emptyList());
+        return save(trip);
     }
 
     @Override
@@ -27,5 +35,14 @@ public class DefaultTripPersistor extends DelegatingPersistor<Trip> implements T
             }
         }
         return tripsCreatedByUser.iterator();
+    }
+
+    @Override
+    public void addPlacesToTrip(Identifier tripId, List<Place> placesToVisit) throws PersistorOperationFailedException {
+        Trip existing = fetch(tripId);
+        List<Place> existingPlacesToVisit = new ArrayList<>(existing.getPlacesToVisit());
+        existingPlacesToVisit.addAll(placesToVisit);
+        Trip updated = new Trip(existing.getId(), existing.getCreatedBy(), existing.getTripName(), existingPlacesToVisit);
+        save(updated);
     }
 }

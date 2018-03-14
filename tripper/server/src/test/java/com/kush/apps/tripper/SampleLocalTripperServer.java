@@ -60,7 +60,7 @@ public class SampleLocalTripperServer {
 
         @Override
         protected Trip createPersistableObject(Identifier id, Trip reference) {
-            return new Trip(id, reference.getCreatedBy(), reference.getTripName());
+            return new Trip(id, reference.getCreatedBy(), reference.getTripName(), reference.getPlacesToVisit());
         }
     }
 

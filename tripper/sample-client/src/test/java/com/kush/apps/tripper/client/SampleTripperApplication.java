@@ -1,6 +1,7 @@
 package com.kush.apps.tripper.client;
 
 import java.util.Iterator;
+import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 import com.kush.apps.tripper.api.Trip;
@@ -14,6 +15,7 @@ import com.kush.lib.service.remoting.auth.User;
 import com.kush.lib.userprofile.UserProfile;
 import com.kush.lib.userprofile.servicegen.generated.clients.UserProfileServiceClient;
 import com.kush.utils.async.Response;
+import com.kush.utils.id.Identifier;
 
 public class SampleTripperApplication {
 
@@ -47,6 +49,11 @@ public class SampleTripperApplication {
         TripPlannerServiceClient client = serviceClientProvider.getServiceClient(TripPlannerServiceClient.class);
         Response<Iterator<Trip>> response = client.getCreatedTrips();
         return response.getResult();
+    }
+
+    public void addPlaces(Identifier id, List<Place> placesToVisit) throws Exception {
+        TripPlannerServiceClient client = serviceClientProvider.getServiceClient(TripPlannerServiceClient.class);
+        client.addPlaces(id, placesToVisit).waitForResult();
     }
 
     public UserProfile updateProfile(ImmutableMap<String, Object> profileFields) throws Exception {
