@@ -10,6 +10,7 @@ import com.kush.lib.location.services.servicegen.generated.clients.PlaceServiceC
 import com.kush.lib.service.client.api.ServiceClientProvider;
 import com.kush.lib.service.client.api.session.LoginServiceClient;
 import com.kush.lib.service.remoting.auth.Credential;
+import com.kush.lib.service.remoting.auth.User;
 import com.kush.lib.userprofile.UserProfile;
 import com.kush.lib.userprofile.servicegen.generated.clients.UserProfileServiceClient;
 import com.kush.utils.async.Response;
@@ -22,9 +23,9 @@ public class SampleTripperApplication {
         this.serviceClientProvider = serviceClientProvider;
     }
 
-    public void register(Credential credential) throws Exception {
+    public User register(Credential credential) throws Exception {
         LoginServiceClient client = serviceClientProvider.getServiceClient(LoginServiceClient.class);
-        client.register(credential).waitForResult();
+        return client.register(credential).getResult();
     }
 
     public void login(Credential credential) throws Exception {

@@ -25,7 +25,6 @@ public class SampleLocalTripperServer {
         ApplicationServer server = new LocalApplicationServer();
         server.registerService(TripPlannerService.class);
         server.registerService(UserProfileService.class);
-
         Persistor<Trip> tripPersistor = new InMemoryTripPersistor();
         InMemoryUserProfilePersistor userProfilePersistor = new InMemoryUserProfilePersistor();
         Context context = ContextBuilder.create()
