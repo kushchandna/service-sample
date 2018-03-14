@@ -5,6 +5,8 @@ import java.util.Iterator;
 import com.google.common.collect.ImmutableMap;
 import com.kush.apps.tripper.api.Trip;
 import com.kush.apps.tripper.services.servicegen.generated.clients.TripPlannerServiceClient;
+import com.kush.lib.location.api.Place;
+import com.kush.lib.location.services.servicegen.generated.clients.PlaceServiceClient;
 import com.kush.lib.service.client.api.ServiceClientProvider;
 import com.kush.lib.service.client.api.session.LoginServiceClient;
 import com.kush.lib.service.remoting.auth.Credential;
@@ -54,5 +56,10 @@ public class SampleTripperApplication {
     public UserProfile getProfile() throws Exception {
         UserProfileServiceClient client = serviceClientProvider.getServiceClient(UserProfileServiceClient.class);
         return client.getProfile().getResult();
+    }
+
+    public Place findPlace(String text) throws Exception {
+        PlaceServiceClient client = serviceClientProvider.getServiceClient(PlaceServiceClient.class);
+        return client.findPlace(text).getResult();
     }
 }

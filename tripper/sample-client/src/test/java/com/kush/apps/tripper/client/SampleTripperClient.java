@@ -8,6 +8,7 @@ import java.util.concurrent.Executors;
 import com.google.common.collect.ImmutableMap;
 import com.kush.apps.tripper.api.Trip;
 import com.kush.apps.tripper.services.servicegen.generated.clients.TripPlannerServiceClient;
+import com.kush.lib.location.api.Place;
 import com.kush.lib.service.client.api.ApplicationClient;
 import com.kush.lib.service.remoting.auth.Credential;
 import com.kush.lib.service.remoting.auth.password.PasswordBasedCredential;
@@ -65,6 +66,12 @@ public class SampleTripperClient {
                 "EMAILS", emailIdVsIsPrimary));
         UserProfile profile = application.getProfile();
         System.out.println(profile.getAllFields());
+
+        Place placeHawaMahal = application.findPlace("Hawa Mahal");
+        placeHawaMahal.toString();
+        Place placeNahargarh = application.findPlace("Nahargarh");
+        placeNahargarh.toString();
+
         application.logout();
     }
 }
