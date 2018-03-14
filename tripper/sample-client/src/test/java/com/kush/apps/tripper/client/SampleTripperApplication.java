@@ -3,7 +3,7 @@ package com.kush.apps.tripper.client;
 import java.util.Iterator;
 
 import com.kush.apps.tripper.api.Trip;
-import com.kush.apps.tripper.serviceclients.TripPlannerServiceClient;
+import com.kush.apps.tripper.services.servicegen.generated.clients.TripPlannerServiceClient;
 import com.kush.lib.service.client.api.ServiceClientProvider;
 import com.kush.lib.service.client.api.session.LoginServiceClient;
 import com.kush.lib.service.remoting.auth.Credential;

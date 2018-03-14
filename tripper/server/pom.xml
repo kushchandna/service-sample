@@ -28,12 +28,9 @@
 					</dependency>
 				</dependencies>
 				<configuration>
-					<serviceClients>
-						<serviceClient>
-							<serviceClassName>com.kush.apps.tripper.services.TripPlannerService</serviceClassName>
-							<targetPackage>com.kush.apps.tripper.serviceclients</targetPackage>
-						</serviceClient>
-					</serviceClients>
+					<services>
+						<service>com.kush.apps.tripper.services.TripPlannerService</service>
+					</services>
 				</configuration>
 				<executions>
 					<execution>

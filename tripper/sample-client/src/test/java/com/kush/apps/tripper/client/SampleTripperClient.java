@@ -5,7 +5,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import com.kush.apps.tripper.api.Trip;
-import com.kush.apps.tripper.serviceclients.TripPlannerServiceClient;
+import com.kush.apps.tripper.services.servicegen.generated.clients.TripPlannerServiceClient;
 import com.kush.lib.service.client.api.ApplicationClient;
 import com.kush.lib.service.remoting.auth.Credential;
 import com.kush.lib.service.remoting.auth.password.PasswordBasedCredential;
