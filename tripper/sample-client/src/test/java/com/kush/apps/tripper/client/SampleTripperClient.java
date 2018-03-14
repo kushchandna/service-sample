@@ -1,9 +1,11 @@
 package com.kush.apps.tripper.client;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import com.google.common.collect.ImmutableMap;
 import com.kush.apps.tripper.api.Trip;
 import com.kush.apps.tripper.services.servicegen.generated.clients.TripPlannerServiceClient;
 import com.kush.lib.service.client.api.ApplicationClient;
@@ -11,6 +13,8 @@ import com.kush.lib.service.remoting.auth.Credential;
 import com.kush.lib.service.remoting.auth.password.PasswordBasedCredential;
 import com.kush.lib.service.remoting.connect.ServiceConnectionFactory;
 import com.kush.lib.service.remoting.connect.local.LocalServiceConnectionFactory;
+import com.kush.lib.userprofile.UserProfile;
+import com.kush.lib.userprofile.servicegen.generated.clients.UserProfileServiceClient;
 
 public class SampleTripperClient {
 
@@ -32,6 +36,7 @@ public class SampleTripperClient {
         Executor executor = Executors.newSingleThreadExecutor();
         client.activateLoginServiceClient(executor);
         client.activateServiceClient(TripPlannerServiceClient.class, executor);
+        client.activateServiceClient(UserProfileServiceClient.class, executor);
 
         SampleTripperApplication application = new SampleTripperApplication(client.getServiceClientProvider());
 
@@ -53,6 +58,13 @@ public class SampleTripperClient {
         application.login(credential3);
         Iterator<Trip> createdTrips3 = application.getCreatedTrips();
         System.out.println(createdTrips3.next().getTripName());
+        Map<String, Boolean> emailIdVsIsPrimary = ImmutableMap.of(
+                "testuser1@domain.com", true);
+        application.updateProfile(ImmutableMap.of(
+                "NAME", "Test User1",
+                "EMAILS", emailIdVsIsPrimary));
+        UserProfile profile = application.getProfile();
+        System.out.println(profile.getAllFields());
         application.logout();
     }
 }
