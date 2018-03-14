@@ -25,23 +25,35 @@ public class SampleLocalTripperServer {
 
     public void start() {
         ApplicationServer server = new LocalApplicationServer();
-        server.registerService(TripPlannerService.class);
-        server.registerService(UserProfileService.class);
-        server.registerService(PlaceService.class);
-        Persistor<Trip> tripPersistor = new InMemoryTripPersistor();
-        InMemoryUserProfilePersistor userProfilePersistor = new InMemoryUserProfilePersistor();
-        Context context = ContextBuilder.create()
-            .withInstance(PlaceFinder.class, new DummyPlaceFinder())
-            .withPersistor(UserCredential.class, new InMemoryUserCredentialPersistor())
-            .withInstance(TripPersistor.class, new DefaultTripPersistor(tripPersistor))
-            .withInstance(UserProfilePersistor.class, new DefaultUserProfilePersistor(userProfilePersistor))
-            .build();
+        registerServices(server);
+        Context context = createContext();
+        startServer(server, context);
+    }
+
+    private void startServer(ApplicationServer server, Context context) {
         try {
             server.start(context);
         } catch (StartupFailedException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private Context createContext() {
+        Persistor<Trip> tripPersistor = new InMemoryTripPersistor();
+        Persistor<UserProfile> userProfilePersistor = new InMemoryUserProfilePersistor();
+        return ContextBuilder.create()
+            .withInstance(PlaceFinder.class, new DummyPlaceFinder())
+            .withInstance(TripPersistor.class, new DefaultTripPersistor(tripPersistor))
+            .withInstance(UserProfilePersistor.class, new DefaultUserProfilePersistor(userProfilePersistor))
+            .withPersistor(UserCredential.class, new InMemoryUserCredentialPersistor())
+            .build();
+    }
+
+    private void registerServices(ApplicationServer server) {
+        server.registerService(TripPlannerService.class);
+        server.registerService(UserProfileService.class);
+        server.registerService(PlaceService.class);
     }
 
     private static final class InMemoryUserCredentialPersistor extends InMemoryPersistor<UserCredential> {
