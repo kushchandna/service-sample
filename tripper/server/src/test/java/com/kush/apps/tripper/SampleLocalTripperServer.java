@@ -42,11 +42,12 @@ public class SampleLocalTripperServer {
     private Context createContext() {
         Persistor<Trip> tripPersistor = new InMemoryTripPersistor();
         Persistor<UserProfile> userProfilePersistor = new InMemoryUserProfilePersistor();
+        Persistor<UserCredential> userCredentialPersistor = new InMemoryUserCredentialPersistor();
         return ContextBuilder.create()
             .withInstance(PlaceFinder.class, new DummyPlaceFinder())
             .withInstance(TripPersistor.class, new DefaultTripPersistor(tripPersistor))
             .withInstance(UserProfilePersistor.class, new DefaultUserProfilePersistor(userProfilePersistor))
-            .withPersistor(UserCredential.class, new InMemoryUserCredentialPersistor())
+            .withPersistor(UserCredential.class, userCredentialPersistor)
             .build();
     }
 
