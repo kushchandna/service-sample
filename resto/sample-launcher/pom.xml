@@ -15,27 +15,27 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.kush.apps</groupId>
-			<artifactId>tripper</artifactId>
+			<artifactId>restro</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.kush.apps.sample</groupId>
-			<artifactId>sample-tripper-client</artifactId>
+			<artifactId>sample-restro-client</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.kush.apps</groupId>
-			<artifactId>tripper</artifactId>
+			<artifactId>restro</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.kush.apps.sample</groupId>
-			<artifactId>sample-tripper-client</artifactId>
+			<artifactId>sample-restro-client</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>

@@ -29,7 +29,7 @@
 				</dependencies>
 				<configuration>
 					<services>
-						<service>com.kush.apps.tripper.services.TripPlannerService</service>
+						<service>com.kush.apps.restro.services.RestaurantConfigurationService</service>
 					</services>
 				</configuration>
 				<executions>
@@ -46,7 +46,7 @@
 				<version>2.5.2</version>
 				<configuration>
 					<groupId>com.kush.apps</groupId>
-					<artifactId>tripper-serviceclients</artifactId>
+					<artifactId>restro-serviceclients</artifactId>
 					<version>${project.version}</version>
 					<packaging>jar</packaging>
 				</configuration>
@@ -57,7 +57,7 @@
 							<goal>install-file</goal>
 						</goals>
 						<configuration>
-							<file>${project.build.directory}/tripper-serviceclients-${project.version}.jar</file>
+							<file>${generated.service.client.jar.path}</file>
 						</configuration>
 					</execution>
 				</executions>

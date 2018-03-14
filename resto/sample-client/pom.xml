@@ -42,22 +42,12 @@
 		</dependency>
 		<dependency>
 			<groupId>com.kush.apps</groupId>
-			<artifactId>tripper-serviceclients</artifactId>
+			<artifactId>restro-serviceclients</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.kush</groupId>
 			<artifactId>logger</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.kush.lib.clients</groupId>
-			<artifactId>user-profile-serviceclients</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.kush.lib.clients</groupId>
-			<artifactId>location-serviceclients</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
