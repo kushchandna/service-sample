@@ -4,6 +4,8 @@ import com.kush.apps.tripper.api.Trip;
 import com.kush.apps.tripper.persistors.DefaultTripPersistor;
 import com.kush.apps.tripper.persistors.TripPersistor;
 import com.kush.apps.tripper.services.TripPlannerService;
+import com.kush.lib.location.api.PlaceFinder;
+import com.kush.lib.location.services.PlaceService;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
 import com.kush.lib.service.remoting.StartupFailedException;
@@ -25,9 +27,11 @@ public class SampleLocalTripperServer {
         ApplicationServer server = new LocalApplicationServer();
         server.registerService(TripPlannerService.class);
         server.registerService(UserProfileService.class);
+        server.registerService(PlaceService.class);
         Persistor<Trip> tripPersistor = new InMemoryTripPersistor();
         InMemoryUserProfilePersistor userProfilePersistor = new InMemoryUserProfilePersistor();
         Context context = ContextBuilder.create()
+            .withInstance(PlaceFinder.class, new DummyPlaceFinder())
             .withPersistor(UserCredential.class, new InMemoryUserCredentialPersistor())
             .withInstance(TripPersistor.class, new DefaultTripPersistor(tripPersistor))
             .withInstance(UserProfilePersistor.class, new DefaultUserProfilePersistor(userProfilePersistor))

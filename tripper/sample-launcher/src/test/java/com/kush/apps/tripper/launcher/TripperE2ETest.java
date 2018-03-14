@@ -2,6 +2,7 @@ package com.kush.apps.tripper.launcher;
 
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -20,6 +21,7 @@ import com.kush.apps.tripper.api.Trip;
 import com.kush.apps.tripper.client.SampleTripperApplication;
 import com.kush.apps.tripper.services.servicegen.generated.clients.TripPlannerServiceClient;
 import com.kush.lib.location.api.Place;
+import com.kush.lib.location.services.servicegen.generated.clients.PlaceServiceClient;
 import com.kush.lib.service.client.api.ApplicationClient;
 import com.kush.lib.service.remoting.auth.Credential;
 import com.kush.lib.service.remoting.auth.User;
@@ -44,6 +46,7 @@ public class TripperE2ETest {
         client.activateLoginServiceClient(executor);
         client.activateServiceClient(TripPlannerServiceClient.class, executor);
         client.activateServiceClient(UserProfileServiceClient.class, executor);
+        client.activateServiceClient(PlaceServiceClient.class, executor);
 
         application = new SampleTripperApplication(client.getServiceClientProvider());
     }
@@ -110,7 +113,9 @@ public class TripperE2ETest {
         Iterator<Trip> trips = application.getCreatedTrips();
         Trip createdTrip = trips.next();
         List<Place> savedPlacesToVisit = createdTrip.getPlacesToVisit();
-        savedPlacesToVisit.toString();
+        assertThat(savedPlacesToVisit, hasSize(2));
+        assertThat(savedPlacesToVisit.get(0).getName(), is(equalTo("Place1")));
+        assertThat(savedPlacesToVisit.get(1).getName(), is(equalTo("Place2")));
     }
 
     private void logoutSilently() {
