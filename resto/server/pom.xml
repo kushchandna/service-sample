@@ -31,6 +31,9 @@
 					<services>
 						<service>com.kush.apps.restro.services.RestaurantConfigurationService</service>
 					</services>
+					<additionalClasses>
+						<additionalClass>com.kush.apps.restro.entities.RestaurantProfile</additionalClass>
+					</additionalClasses>
 				</configuration>
 				<executions>
 					<execution>
