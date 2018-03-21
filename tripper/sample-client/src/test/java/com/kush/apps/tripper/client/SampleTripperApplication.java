@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.kush.apps.tripper.api.Trip;
 import com.kush.apps.tripper.services.servicegen.generated.clients.TripPlannerServiceClient;
 import com.kush.lib.location.api.Place;
@@ -69,5 +70,10 @@ public class SampleTripperApplication {
     public Place findPlace(String text) throws Exception {
         PlaceServiceClient client = serviceClientProvider.getServiceClient(PlaceServiceClient.class);
         return client.findPlace(text).getResult();
+    }
+
+    public List<Place> getPlacesInTrip(Trip trip) throws Exception {
+        TripPlannerServiceClient client = serviceClientProvider.getServiceClient(TripPlannerServiceClient.class);
+        return Lists.newArrayList(client.getPlaces(trip.getId()).getResult());
     }
 }

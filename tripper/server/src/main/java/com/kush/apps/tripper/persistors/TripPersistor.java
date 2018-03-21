@@ -16,4 +16,6 @@ public interface TripPersistor extends Persistor<Trip> {
     Iterator<Trip> getTripsCreatedByUser(Identifier userId) throws PersistorOperationFailedException;
 
     void addPlacesToTrip(Identifier tripId, List<Place> placesToVisit) throws PersistorOperationFailedException;
+
+    Iterator<Place> getPlacesFromTrip(Identifier tripId) throws PersistorOperationFailedException;
 }

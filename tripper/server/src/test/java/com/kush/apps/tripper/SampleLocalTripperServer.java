@@ -1,6 +1,7 @@
 package com.kush.apps.tripper;
 
 import com.kush.apps.tripper.api.Trip;
+import com.kush.apps.tripper.api.TripPlace;
 import com.kush.apps.tripper.persistors.DefaultTripPersistor;
 import com.kush.apps.tripper.persistors.TripPersistor;
 import com.kush.apps.tripper.services.TripPlannerService;
@@ -43,9 +44,10 @@ public class SampleLocalTripperServer {
         Persistor<Trip> tripPersistor = new InMemoryTripPersistor();
         Persistor<UserProfile> userProfilePersistor = new InMemoryUserProfilePersistor();
         Persistor<UserCredential> userCredentialPersistor = new InMemoryUserCredentialPersistor();
+        Persistor<TripPlace> tripPlacePersistor = new InMemoryTripPlacePersistor();
         return ContextBuilder.create()
             .withInstance(PlaceFinder.class, new DummyPlaceFinder())
-            .withInstance(TripPersistor.class, new DefaultTripPersistor(tripPersistor))
+            .withInstance(TripPersistor.class, new DefaultTripPersistor(tripPersistor, tripPlacePersistor))
             .withInstance(UserProfilePersistor.class, new DefaultUserProfilePersistor(userProfilePersistor))
             .withPersistor(UserCredential.class, userCredentialPersistor)
             .build();
@@ -77,7 +79,7 @@ public class SampleLocalTripperServer {
 
         @Override
         protected Trip createPersistableObject(Identifier id, Trip reference) {
-            return new Trip(id, reference.getCreatedBy(), reference.getTripName(), reference.getPlacesToVisit());
+            return new Trip(id, reference.getCreatedBy(), reference.getTripName());
         }
     }
 
@@ -90,6 +92,18 @@ public class SampleLocalTripperServer {
         @Override
         protected UserProfile createPersistableObject(Identifier id, UserProfile reference) {
             return new UserProfile(id, reference.getAllFields());
+        }
+    }
+
+    private static final class InMemoryTripPlacePersistor extends InMemoryPersistor<TripPlace> {
+
+        private InMemoryTripPlacePersistor() {
+            super(new SequentialIdGenerator());
+        }
+
+        @Override
+        protected TripPlace createPersistableObject(Identifier id, TripPlace reference) {
+            return new TripPlace(id, reference.getTrip(), reference.getPlace());
         }
     }
 }

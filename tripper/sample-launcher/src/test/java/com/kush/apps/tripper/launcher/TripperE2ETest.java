@@ -104,7 +104,7 @@ public class TripperE2ETest {
     public void addPlacesToCreatedTrip() throws Exception {
         startSessionForTestUser();
         Trip trip = application.createTrip("Test Trip");
-        assertThat(trip.getPlacesToVisit(), is(empty()));
+        assertThat(application.getPlacesInTrip(trip), is(empty()));
 
         Place place1 = application.findPlace("Place1");
         Place place2 = application.findPlace("Place2");
@@ -112,7 +112,7 @@ public class TripperE2ETest {
 
         Iterator<Trip> trips = application.getCreatedTrips();
         Trip createdTrip = trips.next();
-        List<Place> savedPlacesToVisit = createdTrip.getPlacesToVisit();
+        List<Place> savedPlacesToVisit = application.getPlacesInTrip(createdTrip);
         assertThat(savedPlacesToVisit, hasSize(2));
         assertThat(savedPlacesToVisit.get(0).getName(), is(equalTo("Place1")));
         assertThat(savedPlacesToVisit.get(1).getName(), is(equalTo("Place2")));

@@ -50,6 +50,25 @@ public class TripPlannerService extends BaseService {
     }
 
     @AuthenticationRequired
+    @ServiceMethod(name = "Get Places")
+    public Iterator<Place> getPlaces(Identifier tripId) throws ServiceRequestFailedException {
+        User currentUser = getCurrentUser();
+        TripPersistor persistor = getInstance(TripPersistor.class);
+        Trip trip = getTripForId(tripId, persistor);
+        if (trip == null) {
+            throw new ServiceRequestFailedException("No trip with specified id found");
+        }
+        if (!trip.getCreatedBy().equals(currentUser.getId())) {
+            throw new ServiceRequestFailedException("Specified trip isn't created by current user, hence can't be edited");
+        }
+        try {
+            return persistor.getPlacesFromTrip(tripId);
+        } catch (PersistorOperationFailedException e) {
+            throw new ServiceRequestFailedException(e.getMessage(), e);
+        }
+    }
+
+    @AuthenticationRequired
     @ServiceMethod(name = "Get Created Trips")
     public Iterator<Trip> getCreatedTrips() throws ServiceRequestFailedException {
         User currentUser = getCurrentUser();

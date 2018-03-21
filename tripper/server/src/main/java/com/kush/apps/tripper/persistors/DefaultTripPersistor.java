@@ -1,11 +1,11 @@
 package com.kush.apps.tripper.persistors;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import com.kush.apps.tripper.api.Trip;
+import com.kush.apps.tripper.api.TripPlace;
 import com.kush.lib.location.api.Place;
 import com.kush.lib.persistence.api.DelegatingPersistor;
 import com.kush.lib.persistence.api.Persistor;
@@ -14,13 +14,16 @@ import com.kush.utils.id.Identifier;
 
 public class DefaultTripPersistor extends DelegatingPersistor<Trip> implements TripPersistor {
 
-    public DefaultTripPersistor(Persistor<Trip> delegate) {
+    private final Persistor<TripPlace> tripPlacePersistor;
+
+    public DefaultTripPersistor(Persistor<Trip> delegate, Persistor<TripPlace> tripPlacePersistor) {
         super(delegate);
+        this.tripPlacePersistor = tripPlacePersistor;
     }
 
     @Override
     public Trip createTrip(Identifier createdBy, String tripName) throws PersistorOperationFailedException {
-        Trip trip = new Trip(createdBy, tripName, Collections.emptyList());
+        Trip trip = new Trip(createdBy, tripName);
         return save(trip);
     }
 
@@ -39,10 +42,23 @@ public class DefaultTripPersistor extends DelegatingPersistor<Trip> implements T
 
     @Override
     public void addPlacesToTrip(Identifier tripId, List<Place> placesToVisit) throws PersistorOperationFailedException {
-        Trip existing = fetch(tripId);
-        List<Place> existingPlacesToVisit = new ArrayList<>(existing.getPlacesToVisit());
-        existingPlacesToVisit.addAll(placesToVisit);
-        Trip updated = new Trip(existing.getId(), existing.getCreatedBy(), existing.getTripName(), existingPlacesToVisit);
-        save(updated);
+        Trip trip = fetch(tripId);
+        for (Place place : placesToVisit) {
+            TripPlace tripPlace = new TripPlace(trip, place);
+            tripPlacePersistor.save(tripPlace);
+        }
+    }
+
+    @Override
+    public Iterator<Place> getPlacesFromTrip(Identifier tripId) throws PersistorOperationFailedException {
+        List<Place> result = new ArrayList<>();
+        Iterator<TripPlace> allTripPlaces = tripPlacePersistor.fetchAll();
+        while (allTripPlaces.hasNext()) {
+            TripPlace tripPlace = allTripPlaces.next();
+            if (tripPlace.getTrip().getId().equals(tripId)) {
+                result.add(tripPlace.getPlace());
+            }
+        }
+        return result.iterator();
     }
 }
