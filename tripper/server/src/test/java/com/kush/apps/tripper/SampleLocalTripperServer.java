@@ -1,9 +1,9 @@
 package com.kush.apps.tripper;
 
-import com.kush.apps.tripper.api.Trip;
-import com.kush.apps.tripper.api.TripPlace;
+import com.kush.apps.tripper.api.TripPlan;
+import com.kush.apps.tripper.api.TripPlanPlace;
 import com.kush.apps.tripper.persistors.DefaultTripPersistor;
-import com.kush.apps.tripper.persistors.TripPersistor;
+import com.kush.apps.tripper.persistors.TripPlanPersistor;
 import com.kush.apps.tripper.services.TripPlannerService;
 import com.kush.lib.location.api.PlaceFinder;
 import com.kush.lib.location.services.PlaceService;
@@ -41,13 +41,13 @@ public class SampleLocalTripperServer {
     }
 
     private Context createContext() {
-        Persistor<Trip> tripPersistor = new InMemoryTripPersistor();
+        Persistor<TripPlan> tripPersistor = new InMemoryTripPersistor();
         Persistor<UserProfile> userProfilePersistor = new InMemoryUserProfilePersistor();
         Persistor<UserCredential> userCredentialPersistor = new InMemoryUserCredentialPersistor();
-        Persistor<TripPlace> tripPlacePersistor = new InMemoryTripPlacePersistor();
+        Persistor<TripPlanPlace> tripPlacePersistor = new InMemoryTripPlacePersistor();
         return ContextBuilder.create()
             .withInstance(PlaceFinder.class, new DummyPlaceFinder())
-            .withInstance(TripPersistor.class, new DefaultTripPersistor(tripPersistor, tripPlacePersistor))
+            .withInstance(TripPlanPersistor.class, new DefaultTripPersistor(tripPersistor, tripPlacePersistor))
             .withInstance(UserProfilePersistor.class, new DefaultUserProfilePersistor(userProfilePersistor))
             .withPersistor(UserCredential.class, userCredentialPersistor)
             .build();
@@ -71,15 +71,15 @@ public class SampleLocalTripperServer {
         }
     }
 
-    private static final class InMemoryTripPersistor extends InMemoryPersistor<Trip> {
+    private static final class InMemoryTripPersistor extends InMemoryPersistor<TripPlan> {
 
         private InMemoryTripPersistor() {
             super(new SequentialIdGenerator());
         }
 
         @Override
-        protected Trip createPersistableObject(Identifier id, Trip reference) {
-            return new Trip(id, reference.getCreatedBy(), reference.getTripName());
+        protected TripPlan createPersistableObject(Identifier id, TripPlan reference) {
+            return new TripPlan(id, reference.getCreatedBy(), reference.getTripPlanName());
         }
     }
 
@@ -95,15 +95,15 @@ public class SampleLocalTripperServer {
         }
     }
 
-    private static final class InMemoryTripPlacePersistor extends InMemoryPersistor<TripPlace> {
+    private static final class InMemoryTripPlacePersistor extends InMemoryPersistor<TripPlanPlace> {
 
         private InMemoryTripPlacePersistor() {
             super(new SequentialIdGenerator());
         }
 
         @Override
-        protected TripPlace createPersistableObject(Identifier id, TripPlace reference) {
-            return new TripPlace(id, reference.getTrip(), reference.getPlace());
+        protected TripPlanPlace createPersistableObject(Identifier id, TripPlanPlace reference) {
+            return new TripPlanPlace(id, reference.getTrip(), reference.getPlace());
         }
     }
 }

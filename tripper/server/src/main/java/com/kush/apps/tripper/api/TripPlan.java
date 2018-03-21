@@ -5,20 +5,20 @@ import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
 
 @Exportable
-public class Trip implements Identifiable {
+public class TripPlan implements Identifiable {
 
     private final Identifier tripId;
     private final Identifier createdBy;
-    private final String tripName;
+    private final String tripPlanName;
 
-    public Trip(Identifier createdBy, String tripName) {
-        this(Identifier.NULL, createdBy, tripName);
+    public TripPlan(Identifier createdBy, String tripPlanName) {
+        this(Identifier.NULL, createdBy, tripPlanName);
     }
 
-    public Trip(Identifier tripId, Identifier createdBy, String tripName) {
+    public TripPlan(Identifier tripId, Identifier createdBy, String tripPlanName) {
         this.tripId = tripId;
         this.createdBy = createdBy;
-        this.tripName = tripName;
+        this.tripPlanName = tripPlanName;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class Trip implements Identifiable {
         return createdBy;
     }
 
-    public String getTripName() {
-        return tripName;
+    public String getTripPlanName() {
+        return tripPlanName;
     }
 }

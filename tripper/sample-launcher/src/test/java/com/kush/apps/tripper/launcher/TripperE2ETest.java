@@ -17,7 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.kush.apps.tripper.SampleLocalTripperServer;
-import com.kush.apps.tripper.api.Trip;
+import com.kush.apps.tripper.api.TripPlan;
 import com.kush.apps.tripper.client.SampleTripperApplication;
 import com.kush.apps.tripper.services.servicegen.generated.clients.TripPlannerServiceClient;
 import com.kush.lib.location.api.Place;
@@ -58,61 +58,61 @@ public class TripperE2ETest {
     }
 
     @Test
-    public void createdTrip_CanBeRetrievedByCreator() throws Exception {
-        String user1Trip1 = "First Trip";
-        String user2Trip2 = "Second Trip";
-        String user1Trip3 = "Third Trip";
+    public void createdTripPlan_CanBeRetrievedByCreator() throws Exception {
+        String user1TripPlan1 = "First Trip Plan";
+        String user2TripPlan2 = "Second Trip Plan";
+        String user1TripPlan3 = "Third Trip Plan";
 
         Credential user1Cred1 = new PasswordBasedCredential("testusr1", "testpwd1".toCharArray());
         User user1 = application.register(user1Cred1);
         application.login(user1Cred1);
-        application.createTrip(user1Trip1);
-        application.createTrip(user1Trip3);
+        application.createTripPlan(user1TripPlan1);
+        application.createTripPlan(user1TripPlan3);
         application.logout();
 
         Credential user2Cred1 = new PasswordBasedCredential("testusr2", "testpwd2".toCharArray());
         User user2 = application.register(user2Cred1);
         application.login(user2Cred1);
-        application.createTrip(user2Trip2);
+        application.createTripPlan(user2TripPlan2);
         application.logout();
 
         Credential user1Cred2 = new PasswordBasedCredential("testusr1", "testpwd1".toCharArray());
         application.login(user1Cred2);
-        Iterator<Trip> user1CreatedTrips = application.getCreatedTrips();
+        Iterator<TripPlan> user1CreatedTripPlans = application.getCreatedTripPlans();
         application.logout();
 
         Credential user2Cred2 = new PasswordBasedCredential("testusr2", "testpwd2".toCharArray());
         application.login(user2Cred2);
-        Iterator<Trip> user2CreatedTrips = application.getCreatedTrips();
+        Iterator<TripPlan> user2CreatedTripPlans = application.getCreatedTripPlans();
         application.logout();
 
-        Trip user1CreatedTrip1 = user1CreatedTrips.next();
-        assertThat(user1CreatedTrip1.getTripName(), is(equalTo(user1Trip1)));
-        assertThat(user1CreatedTrip1.getCreatedBy(), is(equalTo(user1.getId())));
-        Trip user1CreatedTrip2 = user1CreatedTrips.next();
-        assertThat(user1CreatedTrip2.getTripName(), is(equalTo(user1Trip3)));
-        assertThat(user1CreatedTrip2.getCreatedBy(), is(equalTo(user1.getId())));
-        assertThat(user1CreatedTrips.hasNext(), is(equalTo(false)));
+        TripPlan user1CreatedTripPlan1 = user1CreatedTripPlans.next();
+        assertThat(user1CreatedTripPlan1.getTripPlanName(), is(equalTo(user1TripPlan1)));
+        assertThat(user1CreatedTripPlan1.getCreatedBy(), is(equalTo(user1.getId())));
+        TripPlan user1CreatedTripPlan2 = user1CreatedTripPlans.next();
+        assertThat(user1CreatedTripPlan2.getTripPlanName(), is(equalTo(user1TripPlan3)));
+        assertThat(user1CreatedTripPlan2.getCreatedBy(), is(equalTo(user1.getId())));
+        assertThat(user1CreatedTripPlans.hasNext(), is(equalTo(false)));
 
-        Trip user2CreatedTrip1 = user2CreatedTrips.next();
-        assertThat(user2CreatedTrip1.getTripName(), is(equalTo(user2Trip2)));
-        assertThat(user2CreatedTrip1.getCreatedBy(), is(equalTo(user2.getId())));
-        assertThat(user2CreatedTrips.hasNext(), is(equalTo(false)));
+        TripPlan user2CreatedTripPlan1 = user2CreatedTripPlans.next();
+        assertThat(user2CreatedTripPlan1.getTripPlanName(), is(equalTo(user2TripPlan2)));
+        assertThat(user2CreatedTripPlan1.getCreatedBy(), is(equalTo(user2.getId())));
+        assertThat(user2CreatedTripPlans.hasNext(), is(equalTo(false)));
     }
 
     @Test
-    public void addPlacesToCreatedTrip() throws Exception {
+    public void addPlacesToCreatedTripPlan() throws Exception {
         startSessionForTestUser();
-        Trip trip = application.createTrip("Test Trip");
-        assertThat(application.getPlacesInTrip(trip), is(empty()));
+        TripPlan tripPlan = application.createTripPlan("Test Trip Plan");
+        assertThat(application.getPlacesInTripPlan(tripPlan), is(empty()));
 
         Place place1 = application.findPlace("Place1");
         Place place2 = application.findPlace("Place2");
-        application.addPlaces(trip.getId(), Arrays.asList(place1, place2));
+        application.addPlaces(tripPlan.getId(), Arrays.asList(place1, place2));
 
-        Iterator<Trip> trips = application.getCreatedTrips();
-        Trip createdTrip = trips.next();
-        List<Place> savedPlacesToVisit = application.getPlacesInTrip(createdTrip);
+        Iterator<TripPlan> tripPlans = application.getCreatedTripPlans();
+        TripPlan createdTripPlan = tripPlans.next();
+        List<Place> savedPlacesToVisit = application.getPlacesInTripPlan(createdTripPlan);
         assertThat(savedPlacesToVisit, hasSize(2));
         assertThat(savedPlacesToVisit.get(0).getName(), is(equalTo("Place1")));
         assertThat(savedPlacesToVisit.get(1).getName(), is(equalTo("Place2")));

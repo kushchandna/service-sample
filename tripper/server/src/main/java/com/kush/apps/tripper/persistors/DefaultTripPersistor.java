@@ -4,59 +4,59 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.kush.apps.tripper.api.Trip;
-import com.kush.apps.tripper.api.TripPlace;
+import com.kush.apps.tripper.api.TripPlan;
+import com.kush.apps.tripper.api.TripPlanPlace;
 import com.kush.lib.location.api.Place;
 import com.kush.lib.persistence.api.DelegatingPersistor;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.utils.id.Identifier;
 
-public class DefaultTripPersistor extends DelegatingPersistor<Trip> implements TripPersistor {
+public class DefaultTripPersistor extends DelegatingPersistor<TripPlan> implements TripPlanPersistor {
 
-    private final Persistor<TripPlace> tripPlacePersistor;
+    private final Persistor<TripPlanPlace> tripPlanPlacePersistor;
 
-    public DefaultTripPersistor(Persistor<Trip> delegate, Persistor<TripPlace> tripPlacePersistor) {
+    public DefaultTripPersistor(Persistor<TripPlan> delegate, Persistor<TripPlanPlace> tripPlanPlacePersistor) {
         super(delegate);
-        this.tripPlacePersistor = tripPlacePersistor;
+        this.tripPlanPlacePersistor = tripPlanPlacePersistor;
     }
 
     @Override
-    public Trip createTrip(Identifier createdBy, String tripName) throws PersistorOperationFailedException {
-        Trip trip = new Trip(createdBy, tripName);
-        return save(trip);
+    public TripPlan createTripPlan(Identifier createdBy, String tripPlanName) throws PersistorOperationFailedException {
+        TripPlan tripPlan = new TripPlan(createdBy, tripPlanName);
+        return save(tripPlan);
     }
 
     @Override
-    public Iterator<Trip> getTripsCreatedByUser(Identifier userId) throws PersistorOperationFailedException {
-        List<Trip> tripsCreatedByUser = new ArrayList<>();
-        Iterator<Trip> allTrips = fetchAll();
-        while (allTrips.hasNext()) {
-            Trip trip = allTrips.next();
-            if (trip.getCreatedBy().equals(userId)) {
-                tripsCreatedByUser.add(trip);
+    public Iterator<TripPlan> getTripPlansForUser(Identifier userId) throws PersistorOperationFailedException {
+        List<TripPlan> tripPlansForUser = new ArrayList<>();
+        Iterator<TripPlan> allTripPlans = fetchAll();
+        while (allTripPlans.hasNext()) {
+            TripPlan tripPlan = allTripPlans.next();
+            if (tripPlan.getCreatedBy().equals(userId)) {
+                tripPlansForUser.add(tripPlan);
             }
         }
-        return tripsCreatedByUser.iterator();
+        return tripPlansForUser.iterator();
     }
 
     @Override
-    public void addPlacesToTrip(Identifier tripId, List<Place> placesToVisit) throws PersistorOperationFailedException {
-        Trip trip = fetch(tripId);
+    public void addPlacesToTripPlan(Identifier tripPlanId, List<Place> placesToVisit) throws PersistorOperationFailedException {
+        TripPlan tripPlan = fetch(tripPlanId);
         for (Place place : placesToVisit) {
-            TripPlace tripPlace = new TripPlace(trip, place);
-            tripPlacePersistor.save(tripPlace);
+            TripPlanPlace tripPlanPlace = new TripPlanPlace(tripPlan, place);
+            tripPlanPlacePersistor.save(tripPlanPlace);
         }
     }
 
     @Override
-    public Iterator<Place> getPlacesFromTrip(Identifier tripId) throws PersistorOperationFailedException {
+    public Iterator<Place> getPlacesInTripPlan(Identifier tripPlanId) throws PersistorOperationFailedException {
         List<Place> result = new ArrayList<>();
-        Iterator<TripPlace> allTripPlaces = tripPlacePersistor.fetchAll();
-        while (allTripPlaces.hasNext()) {
-            TripPlace tripPlace = allTripPlaces.next();
-            if (tripPlace.getTrip().getId().equals(tripId)) {
-                result.add(tripPlace.getPlace());
+        Iterator<TripPlanPlace> allTripPlanPlaces = tripPlanPlacePersistor.fetchAll();
+        while (allTripPlanPlaces.hasNext()) {
+            TripPlanPlace tripPlanPlace = allTripPlanPlaces.next();
+            if (tripPlanPlace.getTrip().getId().equals(tripPlanId)) {
+                result.add(tripPlanPlace.getPlace());
             }
         }
         return result.iterator();

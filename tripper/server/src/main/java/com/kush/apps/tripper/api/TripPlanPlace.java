@@ -4,17 +4,17 @@ import com.kush.lib.location.api.Place;
 import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
 
-public class TripPlace implements Identifiable {
+public class TripPlanPlace implements Identifiable {
 
     private final Identifier id;
-    private final Trip trip;
+    private final TripPlan trip;
     private final Place place;
 
-    public TripPlace(Trip trip, Place place) {
+    public TripPlanPlace(TripPlan trip, Place place) {
         this(Identifier.NULL, trip, place);
     }
 
-    public TripPlace(Identifier id, Trip trip, Place place) {
+    public TripPlanPlace(Identifier id, TripPlan trip, Place place) {
         this.id = id;
         this.trip = trip;
         this.place = place;
@@ -25,7 +25,7 @@ public class TripPlace implements Identifiable {
         return id;
     }
 
-    public Trip getTrip() {
+    public TripPlan getTrip() {
         return trip;
     }
 
