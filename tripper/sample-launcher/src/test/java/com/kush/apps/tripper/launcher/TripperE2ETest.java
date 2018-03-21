@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.kush.apps.tripper.SampleLocalTripperServer;
@@ -23,9 +24,9 @@ import com.kush.apps.tripper.services.servicegen.generated.clients.TripPlannerSe
 import com.kush.lib.location.api.Place;
 import com.kush.lib.location.services.servicegen.generated.clients.PlaceServiceClient;
 import com.kush.lib.service.client.api.ApplicationClient;
-import com.kush.lib.service.remoting.auth.Credential;
+import com.kush.lib.service.client.api.ServiceClientProvider;
+import com.kush.lib.service.client.api.session.LoginServiceClient;
 import com.kush.lib.service.remoting.auth.User;
-import com.kush.lib.service.remoting.auth.password.PasswordBasedCredential;
 import com.kush.lib.service.remoting.connect.ServiceConnectionFactory;
 import com.kush.lib.service.remoting.connect.local.LocalServiceConnectionFactory;
 import com.kush.lib.userprofile.servicegen.generated.clients.UserProfileServiceClient;
@@ -34,6 +35,9 @@ public class TripperE2ETest {
 
     private SampleTripperApplication application;
     private ExecutorService executor;
+
+    @Rule
+    public FakeSessionManager sessionManager = new FakeSessionManager("test", 5);
 
     @Before
     public void setup() throws Exception {
@@ -48,13 +52,14 @@ public class TripperE2ETest {
         client.activateServiceClient(UserProfileServiceClient.class, executor);
         client.activateServiceClient(PlaceServiceClient.class, executor);
 
-        application = new SampleTripperApplication(client.getServiceClientProvider());
+        ServiceClientProvider serviceClientProvider = client.getServiceClientProvider();
+        application = new SampleTripperApplication(serviceClientProvider);
+        sessionManager.initialize(serviceClientProvider.getServiceClient(LoginServiceClient.class));
     }
 
     @After
     public void teardown() throws Exception {
         executor.shutdownNow();
-        logoutSilently();
     }
 
     @Test
@@ -63,28 +68,25 @@ public class TripperE2ETest {
         String user2TripPlan2 = "Second Trip Plan";
         String user1TripPlan3 = "Third Trip Plan";
 
-        Credential user1Cred1 = new PasswordBasedCredential("testusr1", "testpwd1".toCharArray());
-        User user1 = application.register(user1Cred1);
-        application.login(user1Cred1);
+        User[] users = sessionManager.getUsers();
+        User user1 = users[0];
+        sessionManager.beginSession(user1);
         application.createTripPlan(user1TripPlan1);
         application.createTripPlan(user1TripPlan3);
-        application.logout();
+        sessionManager.endSession();
 
-        Credential user2Cred1 = new PasswordBasedCredential("testusr2", "testpwd2".toCharArray());
-        User user2 = application.register(user2Cred1);
-        application.login(user2Cred1);
+        User user2 = users[1];
+        sessionManager.beginSession(user2);
         application.createTripPlan(user2TripPlan2);
-        application.logout();
+        sessionManager.endSession();
 
-        Credential user1Cred2 = new PasswordBasedCredential("testusr1", "testpwd1".toCharArray());
-        application.login(user1Cred2);
+        sessionManager.beginSession(user1);
         Iterator<TripPlan> user1CreatedTripPlans = application.getCreatedTripPlans();
-        application.logout();
+        sessionManager.endSession();
 
-        Credential user2Cred2 = new PasswordBasedCredential("testusr2", "testpwd2".toCharArray());
-        application.login(user2Cred2);
+        sessionManager.beginSession(user2);
         Iterator<TripPlan> user2CreatedTripPlans = application.getCreatedTripPlans();
-        application.logout();
+        sessionManager.endSession();
 
         TripPlan user1CreatedTripPlan1 = user1CreatedTripPlans.next();
         assertThat(user1CreatedTripPlan1.getTripPlanName(), is(equalTo(user1TripPlan1)));
@@ -102,7 +104,7 @@ public class TripperE2ETest {
 
     @Test
     public void addPlacesToCreatedTripPlan() throws Exception {
-        startSessionForTestUser();
+        sessionManager.beginTestSession();
         TripPlan tripPlan = application.createTripPlan("Test Trip Plan");
         assertThat(application.getPlacesInTripPlan(tripPlan), is(empty()));
 
@@ -116,20 +118,5 @@ public class TripperE2ETest {
         assertThat(savedPlacesToVisit, hasSize(2));
         assertThat(savedPlacesToVisit.get(0).getName(), is(equalTo("Place1")));
         assertThat(savedPlacesToVisit.get(1).getName(), is(equalTo("Place2")));
-    }
-
-    private void logoutSilently() {
-        try {
-            application.logout();
-        } catch (Exception e) {
-            // eat exception
-        }
-    }
-
-    private User startSessionForTestUser() throws Exception {
-        Credential cred = new PasswordBasedCredential("testusr", "testpwd".toCharArray());
-        User user = application.register(cred);
-        application.login(cred);
-        return user;
     }
 }

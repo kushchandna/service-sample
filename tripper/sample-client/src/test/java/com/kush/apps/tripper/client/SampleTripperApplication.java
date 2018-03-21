@@ -10,9 +10,6 @@ import com.kush.apps.tripper.services.servicegen.generated.clients.TripPlannerSe
 import com.kush.lib.location.api.Place;
 import com.kush.lib.location.services.servicegen.generated.clients.PlaceServiceClient;
 import com.kush.lib.service.client.api.ServiceClientProvider;
-import com.kush.lib.service.client.api.session.LoginServiceClient;
-import com.kush.lib.service.remoting.auth.Credential;
-import com.kush.lib.service.remoting.auth.User;
 import com.kush.lib.userprofile.UserProfile;
 import com.kush.lib.userprofile.servicegen.generated.clients.UserProfileServiceClient;
 import com.kush.utils.id.Identifier;
@@ -23,21 +20,6 @@ public class SampleTripperApplication {
 
     public SampleTripperApplication(ServiceClientProvider serviceClientProvider) {
         this.serviceClientProvider = serviceClientProvider;
-    }
-
-    public User register(Credential credential) throws Exception {
-        LoginServiceClient client = serviceClientProvider.getServiceClient(LoginServiceClient.class);
-        return client.register(credential).getResult();
-    }
-
-    public void login(Credential credential) throws Exception {
-        LoginServiceClient client = serviceClientProvider.getServiceClient(LoginServiceClient.class);
-        client.login(credential).waitForResult();
-    }
-
-    public void logout() throws Exception {
-        LoginServiceClient client = serviceClientProvider.getServiceClient(LoginServiceClient.class);
-        client.logout().waitForResult();
     }
 
     public TripPlan createTripPlan(String tripPlanName) throws Exception {
