@@ -1,10 +1,10 @@
 package com.kush.apps.tripper.client;
 
-import java.util.Iterator;
+import static com.google.common.collect.Lists.newArrayList;
+
 import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.kush.apps.tripper.api.TripPlan;
 import com.kush.apps.tripper.services.servicegen.generated.clients.TripPlannerServiceClient;
 import com.kush.lib.location.api.Place;
@@ -27,12 +27,12 @@ public class SampleTripperApplication {
         return client.createTripPlan(tripPlanName).getResult();
     }
 
-    public Iterator<TripPlan> getCreatedTripPlans() throws Exception {
+    public List<TripPlan> getTripPlans() throws Exception {
         TripPlannerServiceClient client = serviceClientProvider.getServiceClient(TripPlannerServiceClient.class);
-        return client.getTripPlans().getResult();
+        return newArrayList(client.getTripPlans().getResult());
     }
 
-    public void addPlaces(Identifier id, List<Place> placesToVisit) throws Exception {
+    public void addPlacesToTripPlan(Identifier id, List<Place> placesToVisit) throws Exception {
         TripPlannerServiceClient client = serviceClientProvider.getServiceClient(TripPlannerServiceClient.class);
         client.addPlacesToTripPlan(id, placesToVisit).waitForResult();
     }
@@ -54,6 +54,6 @@ public class SampleTripperApplication {
 
     public List<Place> getPlacesInTripPlan(TripPlan tripPlan) throws Exception {
         TripPlannerServiceClient client = serviceClientProvider.getServiceClient(TripPlannerServiceClient.class);
-        return Lists.newArrayList(client.getPlacesInTripPlan(tripPlan.getId()).getResult());
+        return newArrayList(client.getPlacesInTripPlan(tripPlan.getId()).getResult());
     }
 }

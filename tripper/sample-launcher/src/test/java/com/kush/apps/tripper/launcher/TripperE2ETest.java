@@ -1,13 +1,12 @@
 package com.kush.apps.tripper.launcher;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -81,25 +80,22 @@ public class TripperE2ETest {
         sessionManager.endSession();
 
         sessionManager.beginSession(user1);
-        Iterator<TripPlan> user1CreatedTripPlans = application.getCreatedTripPlans();
+        List<TripPlan> user1CreatedTripPlans = application.getTripPlans();
         sessionManager.endSession();
 
         sessionManager.beginSession(user2);
-        Iterator<TripPlan> user2CreatedTripPlans = application.getCreatedTripPlans();
+        List<TripPlan> user2CreatedTripPlans = application.getTripPlans();
         sessionManager.endSession();
 
-        TripPlan user1CreatedTripPlan1 = user1CreatedTripPlans.next();
-        assertThat(user1CreatedTripPlan1.getTripPlanName(), is(equalTo(user1TripPlan1)));
-        assertThat(user1CreatedTripPlan1.getCreatedBy(), is(equalTo(user1.getId())));
-        TripPlan user1CreatedTripPlan2 = user1CreatedTripPlans.next();
-        assertThat(user1CreatedTripPlan2.getTripPlanName(), is(equalTo(user1TripPlan3)));
-        assertThat(user1CreatedTripPlan2.getCreatedBy(), is(equalTo(user1.getId())));
-        assertThat(user1CreatedTripPlans.hasNext(), is(equalTo(false)));
+        assertThat(user1CreatedTripPlans, hasSize(2));
+        assertThat(user1CreatedTripPlans.get(0).getTripPlanName(), is(equalTo(user1TripPlan1)));
+        assertThat(user1CreatedTripPlans.get(0).getCreatedBy(), is(equalTo(user1.getId())));
+        assertThat(user1CreatedTripPlans.get(1).getTripPlanName(), is(equalTo(user1TripPlan3)));
+        assertThat(user1CreatedTripPlans.get(1).getCreatedBy(), is(equalTo(user1.getId())));
 
-        TripPlan user2CreatedTripPlan1 = user2CreatedTripPlans.next();
-        assertThat(user2CreatedTripPlan1.getTripPlanName(), is(equalTo(user2TripPlan2)));
-        assertThat(user2CreatedTripPlan1.getCreatedBy(), is(equalTo(user2.getId())));
-        assertThat(user2CreatedTripPlans.hasNext(), is(equalTo(false)));
+        assertThat(user2CreatedTripPlans, hasSize(1));
+        assertThat(user2CreatedTripPlans.get(0).getTripPlanName(), is(equalTo(user2TripPlan2)));
+        assertThat(user2CreatedTripPlans.get(0).getCreatedBy(), is(equalTo(user2.getId())));
     }
 
     @Test
@@ -110,11 +106,10 @@ public class TripperE2ETest {
 
         Place place1 = application.findPlace("Place1");
         Place place2 = application.findPlace("Place2");
-        application.addPlaces(tripPlan.getId(), Arrays.asList(place1, place2));
+        application.addPlacesToTripPlan(tripPlan.getId(), asList(place1, place2));
 
-        Iterator<TripPlan> tripPlans = application.getCreatedTripPlans();
-        TripPlan createdTripPlan = tripPlans.next();
-        List<Place> savedPlacesToVisit = application.getPlacesInTripPlan(createdTripPlan);
+        List<TripPlan> tripPlans = application.getTripPlans();
+        List<Place> savedPlacesToVisit = application.getPlacesInTripPlan(tripPlans.get(0));
         assertThat(savedPlacesToVisit, hasSize(2));
         assertThat(savedPlacesToVisit.get(0).getName(), is(equalTo("Place1")));
         assertThat(savedPlacesToVisit.get(1).getName(), is(equalTo("Place2")));
