@@ -16,9 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -41,22 +39,14 @@ import com.kush.utils.id.Identifier;
 
 public class TripperE2ETest {
 
-    private static SampleLocalTripperServer server;
-    private static ExecutorService serverExecutor;
+    private SampleLocalTripperServer server;
+    private ExecutorService serverExecutor;
 
     private SampleTripperApplication application;
     private ExecutorService clientExecutor;
 
     @Rule
     public FakeSessionManager sessionManager = new FakeSessionManager("test", 5);
-
-    @BeforeClass
-    public static void beforeAllTests() throws Exception {
-    }
-
-    @AfterClass
-    public static void afterAllTests() throws Exception {
-    }
 
     @Before
     public void beforeEachTest() throws Exception {
