@@ -142,7 +142,7 @@ public class TripperE2ETest {
         // create trip plan
         sessionManager.beginSession(tripPlanOwner);
         TripPlan tripPlan = application.createTripPlan("Test Trip Plan");
-        application.setTripPlanDuration(tripPlan, duration);
+        application.setTripPlanDuration(tripPlan.getId(), duration);
         application.addPlacesToTripPlan(tripPlan.getId(), places);
         application.addMembersToTripPlan(tripPlan.getId(), memberUserIds);
         sessionManager.endSession();

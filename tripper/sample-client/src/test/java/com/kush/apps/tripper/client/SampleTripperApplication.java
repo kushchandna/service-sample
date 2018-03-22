@@ -57,7 +57,7 @@ public class SampleTripperApplication {
         return newArrayList(client.getPlacesInTripPlan(tripPlan.getId()).getResult());
     }
 
-    public void setTripPlanDuration(TripPlan tripPlan, Duration duration) {
+    public void setTripPlanDuration(Identifier tripPlanId, Duration duration) {
         // TODO
     }
 
