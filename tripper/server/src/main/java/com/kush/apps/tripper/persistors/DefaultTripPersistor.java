@@ -23,7 +23,7 @@ public class DefaultTripPersistor extends DelegatingPersistor<TripPlan> implemen
 
     @Override
     public TripPlan createTripPlan(Identifier createdBy, String tripPlanName) throws PersistorOperationFailedException {
-        TripPlan tripPlan = new TripPlan(createdBy, tripPlanName);
+        TripPlan tripPlan = new TripPlan(createdBy, tripPlanName, null);
         return save(tripPlan);
     }
 

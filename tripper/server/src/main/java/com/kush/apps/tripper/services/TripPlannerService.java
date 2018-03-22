@@ -5,6 +5,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.kush.apps.tripper.api.Duration;
 import com.kush.apps.tripper.api.TripPlan;
 import com.kush.apps.tripper.persistors.TripPlanPersistor;
 import com.kush.lib.location.api.Place;
@@ -68,6 +69,24 @@ public class TripPlannerService extends BaseService {
         }
     }
 
+    @AuthenticationRequired
+    @ServiceMethod(name = "Set Trip Plan Duration")
+    public void setTripPlanDuration(Identifier tripPlanId, Duration duration) throws ServiceRequestFailedException {
+        TripPlanPersistor persistor = getInstance(TripPlanPersistor.class);
+        TripPlan tripPlan = validateTripPlanBelongsToCurrentUser(persistor, tripPlanId);
+        TripPlan updatedTripPlan = new TripPlan(tripPlan.getId(), tripPlan.getCreatedBy(), tripPlan.getTripPlanName(), duration);
+        try {
+            persistor.save(updatedTripPlan);
+        } catch (PersistorOperationFailedException e) {
+            throw new ServiceRequestFailedException(e);
+        }
+    }
+
+    @AuthenticationRequired
+    @ServiceMethod(name = "Add Members To Trip Plan")
+    public void addMembersToTripPlan(Identifier tripPlanId, List<Identifier> memberUserIds) {
+    }
+
     private TripPlan getTripPlanForId(Identifier tripPlanId, TripPlanPersistor persistor) throws ServiceRequestFailedException {
         try {
             return persistor.fetch(tripPlanId);
@@ -76,7 +95,7 @@ public class TripPlannerService extends BaseService {
         }
     }
 
-    private void validateTripPlanBelongsToCurrentUser(TripPlanPersistor persistor, Identifier tripPlanId)
+    private TripPlan validateTripPlanBelongsToCurrentUser(TripPlanPersistor persistor, Identifier tripPlanId)
             throws ServiceRequestFailedException {
         User currentUser = getCurrentUser();
         TripPlan tripPlan = getTripPlanForId(tripPlanId, persistor);
@@ -86,5 +105,6 @@ public class TripPlannerService extends BaseService {
         if (!tripPlan.getCreatedBy().equals(currentUser.getId())) {
             throw new ServiceRequestFailedException("Operation only supported for trip plans created by current user");
         }
+        return tripPlan;
     }
 }

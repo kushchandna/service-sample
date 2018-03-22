@@ -14,15 +14,17 @@ public class TripPlan implements Identifiable, Serializable {
     private final Identifier tripId;
     private final Identifier createdBy;
     private final String tripPlanName;
+    private final Duration duration;
 
-    public TripPlan(Identifier createdBy, String tripPlanName) {
-        this(Identifier.NULL, createdBy, tripPlanName);
+    public TripPlan(Identifier createdBy, String tripPlanName, Duration duration) {
+        this(Identifier.NULL, createdBy, tripPlanName, duration);
     }
 
-    public TripPlan(Identifier tripId, Identifier createdBy, String tripPlanName) {
+    public TripPlan(Identifier tripId, Identifier createdBy, String tripPlanName, Duration duration) {
         this.tripId = tripId;
         this.createdBy = createdBy;
         this.tripPlanName = tripPlanName;
+        this.duration = duration;
     }
 
     @Override
@@ -36,5 +38,9 @@ public class TripPlan implements Identifiable, Serializable {
 
     public String getTripPlanName() {
         return tripPlanName;
+    }
+
+    public Duration getDuration() {
+        return duration;
     }
 }

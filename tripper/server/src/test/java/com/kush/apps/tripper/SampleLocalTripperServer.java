@@ -92,7 +92,7 @@ public class SampleLocalTripperServer {
 
         @Override
         protected TripPlan createPersistableObject(Identifier id, TripPlan reference) {
-            return new TripPlan(id, reference.getCreatedBy(), reference.getTripPlanName());
+            return new TripPlan(id, reference.getCreatedBy(), reference.getTripPlanName(), reference.getDuration());
         }
     }
 
