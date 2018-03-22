@@ -1,8 +1,10 @@
 package com.kush.apps.tripper.services;
 
-import java.util.Iterator;
+import static com.google.common.collect.Lists.newArrayList;
+
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.kush.apps.tripper.api.TripPlan;
 import com.kush.apps.tripper.persistors.TripPlanPersistor;
 import com.kush.lib.location.api.Place;
@@ -44,11 +46,11 @@ public class TripPlannerService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod(name = "Get Places In Trip Plan")
-    public Iterator<Place> getPlacesInTripPlan(Identifier tripPlanId) throws ServiceRequestFailedException {
+    public List<Place> getPlacesInTripPlan(Identifier tripPlanId) throws ServiceRequestFailedException {
         TripPlanPersistor persistor = getInstance(TripPlanPersistor.class);
         validateTripPlanBelongsToCurrentUser(persistor, tripPlanId);
         try {
-            return persistor.getPlacesInTripPlan(tripPlanId);
+            return Lists.newArrayList(persistor.getPlacesInTripPlan(tripPlanId));
         } catch (PersistorOperationFailedException e) {
             throw new ServiceRequestFailedException(e.getMessage(), e);
         }
@@ -56,11 +58,11 @@ public class TripPlannerService extends BaseService {
 
     @AuthenticationRequired
     @ServiceMethod(name = "Get Trip Plans")
-    public Iterator<TripPlan> getTripPlans() throws ServiceRequestFailedException {
+    public List<TripPlan> getTripPlans() throws ServiceRequestFailedException {
         User currentUser = getCurrentUser();
         TripPlanPersistor tripPlanPersistor = getInstance(TripPlanPersistor.class);
         try {
-            return tripPlanPersistor.getTripPlansForUser(currentUser.getId());
+            return newArrayList(tripPlanPersistor.getTripPlansForUser(currentUser.getId()));
         } catch (PersistorOperationFailedException e) {
             throw new ServiceRequestFailedException(e.getMessage(), e);
         }

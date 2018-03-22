@@ -14,6 +14,8 @@ public class DummyPlaceFinder implements PlaceFinder {
     public Place find(String text) {
         return new Place() {
 
+            private static final long serialVersionUID = 1L;
+
             private final Location location = new Location(RANDOM.nextDouble(), RANDOM.nextDouble());
 
             @Override

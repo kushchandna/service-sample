@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import com.kush.apps.tripper.SampleLocalTripperServer;
 import com.kush.apps.tripper.api.TripPlan;
 import com.kush.apps.tripper.client.Duration;
 import com.kush.apps.tripper.client.SampleTripperApplication;
@@ -32,7 +31,7 @@ import com.kush.lib.service.client.api.ServiceClientProvider;
 import com.kush.lib.service.client.api.session.LoginServiceClient;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.lib.service.remoting.connect.ServiceConnectionFactory;
-import com.kush.lib.service.remoting.connect.local.LocalServiceConnectionFactory;
+import com.kush.lib.service.remoting.connect.socket.SocketServiceConnectionFactory;
 import com.kush.lib.userprofile.servicegen.generated.clients.UserProfileServiceClient;
 import com.kush.utils.id.Identifier;
 
@@ -46,10 +45,8 @@ public class TripperE2ETest {
 
     @Before
     public void setup() throws Exception {
-        SampleLocalTripperServer server = new SampleLocalTripperServer();
-        server.start();
         ApplicationClient client = new ApplicationClient();
-        ServiceConnectionFactory connectionFactory = new LocalServiceConnectionFactory();
+        ServiceConnectionFactory connectionFactory = new SocketServiceConnectionFactory("localhost", 3789);
         client.start(connectionFactory);
         executor = Executors.newSingleThreadExecutor();
         client.activateLoginServiceClient(executor);

@@ -1,7 +1,5 @@
 package com.kush.apps.tripper.client;
 
-import static com.google.common.collect.Lists.newArrayList;
-
 import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
@@ -29,7 +27,7 @@ public class SampleTripperApplication {
 
     public List<TripPlan> getTripPlans() throws Exception {
         TripPlannerServiceClient client = serviceClientProvider.getServiceClient(TripPlannerServiceClient.class);
-        return newArrayList(client.getTripPlans().getResult());
+        return client.getTripPlans().getResult();
     }
 
     public void addPlacesToTripPlan(Identifier tripPlanId, List<Place> placesToVisit) throws Exception {
@@ -54,7 +52,7 @@ public class SampleTripperApplication {
 
     public List<Place> getPlacesInTripPlan(TripPlan tripPlan) throws Exception {
         TripPlannerServiceClient client = serviceClientProvider.getServiceClient(TripPlannerServiceClient.class);
-        return newArrayList(client.getPlacesInTripPlan(tripPlan.getId()).getResult());
+        return client.getPlacesInTripPlan(tripPlan.getId()).getResult();
     }
 
     public void setTripPlanDuration(Identifier tripPlanId, Duration duration) {
