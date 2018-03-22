@@ -1,5 +1,6 @@
 package com.kush.apps.tripper.launcher;
 
+import static java.time.Month.APRIL;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
@@ -7,6 +8,9 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,6 +22,7 @@ import org.junit.Test;
 
 import com.kush.apps.tripper.SampleLocalTripperServer;
 import com.kush.apps.tripper.api.TripPlan;
+import com.kush.apps.tripper.client.Duration;
 import com.kush.apps.tripper.client.SampleTripperApplication;
 import com.kush.apps.tripper.services.servicegen.generated.clients.TripPlannerServiceClient;
 import com.kush.lib.location.api.Place;
@@ -29,6 +34,7 @@ import com.kush.lib.service.remoting.auth.User;
 import com.kush.lib.service.remoting.connect.ServiceConnectionFactory;
 import com.kush.lib.service.remoting.connect.local.LocalServiceConnectionFactory;
 import com.kush.lib.userprofile.servicegen.generated.clients.UserProfileServiceClient;
+import com.kush.utils.id.Identifier;
 
 public class TripperE2ETest {
 
@@ -113,5 +119,32 @@ public class TripperE2ETest {
         assertThat(savedPlacesToVisit, hasSize(2));
         assertThat(savedPlacesToVisit.get(0).getName(), is(equalTo("Place1")));
         assertThat(savedPlacesToVisit.get(1).getName(), is(equalTo("Place2")));
+    }
+
+    @Test
+    public void planATrip() throws Exception {
+        // decide dates for a trip plan
+        LocalDateTime tripPlanStartTime = LocalDateTime.of(LocalDate.of(2018, APRIL, 10), LocalTime.of(22, 0));
+        LocalDateTime tripPlanEndTime = LocalDateTime.of(LocalDate.of(2018, APRIL, 14), LocalTime.of(2, 0));
+        Duration duration = Duration.during(tripPlanStartTime, tripPlanEndTime);
+
+        // decide places for trip plan
+        Place place1 = application.findPlace("Place1");
+        Place place2 = application.findPlace("Place2");
+        Place place3 = application.findPlace("Place3");
+        List<Place> places = asList(place1, place2, place3);
+
+        // add members to trip plan
+        User[] users = sessionManager.getUsers();
+        User tripPlanOwner = users[0];
+        List<Identifier> memberUserIds = asList(users[1].getId(), users[2].getId(), users[3].getId());
+
+        // create trip plan
+        sessionManager.beginSession(tripPlanOwner);
+        TripPlan tripPlan = application.createTripPlan("Test Trip Plan");
+        application.setTripPlanDuration(tripPlan, duration);
+        application.addPlacesToTripPlan(tripPlan.getId(), places);
+        application.addMembersToTripPlan(tripPlan.getId(), memberUserIds);
+        sessionManager.endSession();
     }
 }

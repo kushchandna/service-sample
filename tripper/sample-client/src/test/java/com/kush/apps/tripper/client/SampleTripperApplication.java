@@ -32,9 +32,9 @@ public class SampleTripperApplication {
         return newArrayList(client.getTripPlans().getResult());
     }
 
-    public void addPlacesToTripPlan(Identifier id, List<Place> placesToVisit) throws Exception {
+    public void addPlacesToTripPlan(Identifier tripPlanId, List<Place> placesToVisit) throws Exception {
         TripPlannerServiceClient client = serviceClientProvider.getServiceClient(TripPlannerServiceClient.class);
-        client.addPlacesToTripPlan(id, placesToVisit).waitForResult();
+        client.addPlacesToTripPlan(tripPlanId, placesToVisit).waitForResult();
     }
 
     public UserProfile updateProfile(ImmutableMap<String, Object> profileFields) throws Exception {
@@ -55,5 +55,13 @@ public class SampleTripperApplication {
     public List<Place> getPlacesInTripPlan(TripPlan tripPlan) throws Exception {
         TripPlannerServiceClient client = serviceClientProvider.getServiceClient(TripPlannerServiceClient.class);
         return newArrayList(client.getPlacesInTripPlan(tripPlan.getId()).getResult());
+    }
+
+    public void setTripPlanDuration(TripPlan tripPlan, Duration duration) {
+        // TODO
+    }
+
+    public void addMembersToTripPlan(Identifier tripPlanId, List<Identifier> memberUserIds) {
+        // TODO
     }
 }
