@@ -1,8 +1,5 @@
 package com.kush.apps.tripper;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
 import com.kush.apps.tripper.api.TripPlan;
 import com.kush.apps.tripper.api.TripPlanPlace;
 import com.kush.apps.tripper.persistors.DefaultTripPersistor;
@@ -12,8 +9,9 @@ import com.kush.lib.location.api.PlaceFinder;
 import com.kush.lib.location.services.PlaceService;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
+import com.kush.lib.service.remoting.ShutdownFailedException;
 import com.kush.lib.service.remoting.StartupFailedException;
-import com.kush.lib.service.remoting.receiver.socket.ServerSocketServiceRequestReceiver;
+import com.kush.lib.service.remoting.receiver.ServiceRequestReceiver;
 import com.kush.lib.service.server.ApplicationServer;
 import com.kush.lib.service.server.Context;
 import com.kush.lib.service.server.ContextBuilder;
@@ -27,13 +25,23 @@ import com.kush.utils.id.SequentialIdGenerator;
 
 public class SampleLocalTripperServer {
 
-    public void start() {
-        ApplicationServer server = new ApplicationServer();
-        Executor executor = Executors.newFixedThreadPool(5);
-        server.registerServiceRequestReceiver(new ServerSocketServiceRequestReceiver(executor, 3789));
+    private ApplicationServer server;
+
+    public void start(ServiceRequestReceiver requestReceiver) {
+        server = new ApplicationServer();
+        server.registerServiceRequestReceiver(requestReceiver);
         registerServices(server);
         Context context = createContext();
         startServer(server, context);
+    }
+
+    public void stop() {
+        try {
+            server.stop();
+        } catch (ShutdownFailedException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void startServer(ApplicationServer server, Context context) {

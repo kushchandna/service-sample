@@ -16,10 +16,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
+import com.kush.apps.tripper.SampleLocalTripperServer;
 import com.kush.apps.tripper.api.TripPlan;
 import com.kush.apps.tripper.client.Duration;
 import com.kush.apps.tripper.client.SampleTripperApplication;
@@ -32,27 +35,43 @@ import com.kush.lib.service.client.api.session.LoginServiceClient;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.lib.service.remoting.connect.ServiceConnectionFactory;
 import com.kush.lib.service.remoting.connect.socket.SocketServiceConnectionFactory;
+import com.kush.lib.service.remoting.receiver.socket.ServerSocketServiceRequestReceiver;
 import com.kush.lib.userprofile.servicegen.generated.clients.UserProfileServiceClient;
 import com.kush.utils.id.Identifier;
 
 public class TripperE2ETest {
 
+    private static SampleLocalTripperServer server;
+    private static ExecutorService serverExecutor;
+
     private SampleTripperApplication application;
-    private ExecutorService executor;
+    private ExecutorService clientExecutor;
 
     @Rule
     public FakeSessionManager sessionManager = new FakeSessionManager("test", 5);
 
+    @BeforeClass
+    public static void beforeAllTests() throws Exception {
+    }
+
+    @AfterClass
+    public static void afterAllTests() throws Exception {
+    }
+
     @Before
-    public void setup() throws Exception {
+    public void beforeEachTest() throws Exception {
+        server = new SampleLocalTripperServer();
+        serverExecutor = Executors.newSingleThreadExecutor();
+        server.start(new ServerSocketServiceRequestReceiver(serverExecutor, 3789));
+
         ApplicationClient client = new ApplicationClient();
         ServiceConnectionFactory connectionFactory = new SocketServiceConnectionFactory("localhost", 3789);
         client.start(connectionFactory);
-        executor = Executors.newSingleThreadExecutor();
-        client.activateLoginServiceClient(executor);
-        client.activateServiceClient(TripPlannerServiceClient.class, executor);
-        client.activateServiceClient(UserProfileServiceClient.class, executor);
-        client.activateServiceClient(PlaceServiceClient.class, executor);
+        clientExecutor = Executors.newSingleThreadExecutor();
+        client.activateLoginServiceClient(clientExecutor);
+        client.activateServiceClient(TripPlannerServiceClient.class, clientExecutor);
+        client.activateServiceClient(UserProfileServiceClient.class, clientExecutor);
+        client.activateServiceClient(PlaceServiceClient.class, clientExecutor);
 
         ServiceClientProvider serviceClientProvider = client.getServiceClientProvider();
         application = new SampleTripperApplication(serviceClientProvider);
@@ -60,8 +79,10 @@ public class TripperE2ETest {
     }
 
     @After
-    public void teardown() throws Exception {
-        executor.shutdownNow();
+    public void afterEachTest() throws Exception {
+        server.stop();
+        clientExecutor.shutdownNow();
+        serverExecutor.shutdownNow();
     }
 
     @Test
