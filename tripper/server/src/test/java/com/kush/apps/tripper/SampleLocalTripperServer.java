@@ -1,6 +1,7 @@
 package com.kush.apps.tripper;
 
 import com.kush.apps.tripper.api.TripPlan;
+import com.kush.apps.tripper.api.TripPlanMember;
 import com.kush.apps.tripper.api.TripPlanPlace;
 import com.kush.apps.tripper.persistors.DefaultTripPersistor;
 import com.kush.apps.tripper.persistors.TripPlanPersistor;
@@ -54,13 +55,15 @@ public class SampleLocalTripperServer {
     }
 
     private Context createContext() {
-        Persistor<TripPlan> tripPersistor = new InMemoryTripPersistor();
+        Persistor<TripPlan> tripPlanPersistor = new InMemoryTripPersistor();
         Persistor<UserProfile> userProfilePersistor = new InMemoryUserProfilePersistor();
         Persistor<UserCredential> userCredentialPersistor = new InMemoryUserCredentialPersistor();
-        Persistor<TripPlanPlace> tripPlacePersistor = new InMemoryTripPlacePersistor();
+        Persistor<TripPlanPlace> tripPlanPlacePersistor = new InMemoryTripPlanPlacePersistor();
+        Persistor<TripPlanMember> tripPlanMemberPersistor = new InMemoryTripPlanMemberPersistor();
         return ContextBuilder.create()
             .withInstance(PlaceFinder.class, new DummyPlaceFinder())
-            .withInstance(TripPlanPersistor.class, new DefaultTripPersistor(tripPersistor, tripPlacePersistor))
+            .withInstance(TripPlanPersistor.class,
+                    new DefaultTripPersistor(tripPlanPersistor, tripPlanPlacePersistor, tripPlanMemberPersistor))
             .withInstance(UserProfilePersistor.class, new DefaultUserProfilePersistor(userProfilePersistor))
             .withPersistor(UserCredential.class, userCredentialPersistor)
             .build();
@@ -108,15 +111,27 @@ public class SampleLocalTripperServer {
         }
     }
 
-    private static final class InMemoryTripPlacePersistor extends InMemoryPersistor<TripPlanPlace> {
+    private static final class InMemoryTripPlanPlacePersistor extends InMemoryPersistor<TripPlanPlace> {
 
-        private InMemoryTripPlacePersistor() {
+        private InMemoryTripPlanPlacePersistor() {
             super(new SequentialIdGenerator());
         }
 
         @Override
         protected TripPlanPlace createPersistableObject(Identifier id, TripPlanPlace reference) {
-            return new TripPlanPlace(id, reference.getTrip(), reference.getPlace());
+            return new TripPlanPlace(id, reference.getTripPlan(), reference.getPlace());
+        }
+    }
+
+    private static final class InMemoryTripPlanMemberPersistor extends InMemoryPersistor<TripPlanMember> {
+
+        private InMemoryTripPlanMemberPersistor() {
+            super(new SequentialIdGenerator());
+        }
+
+        @Override
+        protected TripPlanMember createPersistableObject(Identifier id, TripPlanMember reference) {
+            return new TripPlanMember(id, reference.getTripPlan(), reference.getUserId());
         }
     }
 }

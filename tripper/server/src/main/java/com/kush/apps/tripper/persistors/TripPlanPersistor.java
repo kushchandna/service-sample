@@ -2,6 +2,7 @@ package com.kush.apps.tripper.persistors;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.kush.apps.tripper.api.TripPlan;
 import com.kush.lib.location.api.Place;
@@ -18,4 +19,6 @@ public interface TripPlanPersistor extends Persistor<TripPlan> {
     void addPlacesToTripPlan(Identifier tripPlanId, List<Place> placesToVisit) throws PersistorOperationFailedException;
 
     Iterator<Place> getPlacesInTripPlan(Identifier tripPlanId) throws PersistorOperationFailedException;
+
+    void addMembersToTripPlan(Identifier tripPlanId, Set<Identifier> userIds) throws PersistorOperationFailedException;
 }

@@ -3,8 +3,10 @@ package com.kush.apps.tripper.persistors;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.kush.apps.tripper.api.TripPlan;
+import com.kush.apps.tripper.api.TripPlanMember;
 import com.kush.apps.tripper.api.TripPlanPlace;
 import com.kush.lib.location.api.Place;
 import com.kush.lib.persistence.api.DelegatingPersistor;
@@ -15,10 +17,13 @@ import com.kush.utils.id.Identifier;
 public class DefaultTripPersistor extends DelegatingPersistor<TripPlan> implements TripPlanPersistor {
 
     private final Persistor<TripPlanPlace> tripPlanPlacePersistor;
+    private final Persistor<TripPlanMember> tripPlanMemberPersistor;
 
-    public DefaultTripPersistor(Persistor<TripPlan> delegate, Persistor<TripPlanPlace> tripPlanPlacePersistor) {
+    public DefaultTripPersistor(Persistor<TripPlan> delegate, Persistor<TripPlanPlace> tripPlanPlacePersistor,
+            Persistor<TripPlanMember> tripPlanMemberPersistor) {
         super(delegate);
         this.tripPlanPlacePersistor = tripPlanPlacePersistor;
+        this.tripPlanMemberPersistor = tripPlanMemberPersistor;
     }
 
     @Override
@@ -55,10 +60,19 @@ public class DefaultTripPersistor extends DelegatingPersistor<TripPlan> implemen
         Iterator<TripPlanPlace> allTripPlanPlaces = tripPlanPlacePersistor.fetchAll();
         while (allTripPlanPlaces.hasNext()) {
             TripPlanPlace tripPlanPlace = allTripPlanPlaces.next();
-            if (tripPlanPlace.getTrip().getId().equals(tripPlanId)) {
+            if (tripPlanPlace.getTripPlan().getId().equals(tripPlanId)) {
                 result.add(tripPlanPlace.getPlace());
             }
         }
         return result.iterator();
+    }
+
+    @Override
+    public void addMembersToTripPlan(Identifier tripPlanId, Set<Identifier> userIds) throws PersistorOperationFailedException {
+        TripPlan tripPlan = fetch(tripPlanId);
+        for (Identifier userId : userIds) {
+            TripPlanMember tripPlanMember = new TripPlanMember(tripPlan, userId);
+            tripPlanMemberPersistor.save(tripPlanMember);
+        }
     }
 }
