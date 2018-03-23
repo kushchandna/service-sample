@@ -1,8 +1,10 @@
 package com.kush.apps.tripper.client;
 
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
+import com.kush.apps.tripper.api.Duration;
 import com.kush.apps.tripper.api.TripPlan;
 import com.kush.apps.tripper.services.servicegen.generated.clients.TripPlannerServiceClient;
 import com.kush.lib.location.api.Place;
@@ -55,11 +57,13 @@ public class SampleTripperApplication {
         return client.getPlacesInTripPlan(tripPlan.getId()).getResult();
     }
 
-    public void setTripPlanDuration(Identifier tripPlanId, Duration duration) {
-        // TODO
+    public void setTripPlanDuration(Identifier tripPlanId, Duration duration) throws Exception {
+        TripPlannerServiceClient client = serviceClientProvider.getServiceClient(TripPlannerServiceClient.class);
+        client.setTripPlanDuration(tripPlanId, duration).waitForResult();
     }
 
-    public void addMembersToTripPlan(Identifier tripPlanId, List<Identifier> memberUserIds) {
-        // TODO
+    public void addMembersToTripPlan(Identifier tripPlanId, Set<Identifier> memberUserIds) throws Exception {
+        TripPlannerServiceClient client = serviceClientProvider.getServiceClient(TripPlannerServiceClient.class);
+        client.addMembersToTripPlan(tripPlanId, memberUserIds).waitForResult();
     }
 }

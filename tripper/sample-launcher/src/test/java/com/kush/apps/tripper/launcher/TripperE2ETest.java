@@ -1,5 +1,6 @@
 package com.kush.apps.tripper.launcher;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static java.time.Month.APRIL;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.empty;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -21,8 +23,8 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import com.kush.apps.tripper.SampleLocalTripperServer;
+import com.kush.apps.tripper.api.Duration;
 import com.kush.apps.tripper.api.TripPlan;
-import com.kush.apps.tripper.client.Duration;
 import com.kush.apps.tripper.client.SampleTripperApplication;
 import com.kush.apps.tripper.services.servicegen.generated.clients.TripPlannerServiceClient;
 import com.kush.lib.location.api.Place;
@@ -145,7 +147,7 @@ public class TripperE2ETest {
         // add members to trip plan
         User[] users = sessionManager.getUsers();
         User tripPlanOwner = users[0];
-        List<Identifier> memberUserIds = asList(users[1].getId(), users[2].getId(), users[3].getId());
+        Set<Identifier> memberUserIds = newHashSet(users[1].getId(), users[2].getId(), users[3].getId());
 
         // create trip plan
         sessionManager.beginSession(tripPlanOwner);
