@@ -46,7 +46,7 @@
 				<version>2.5.2</version>
 				<configuration>
 					<groupId>com.kush.apps</groupId>
-					<artifactId>tripper-serviceclients</artifactId>
+					<artifactId>${project.name}-serviceclients</artifactId>
 					<version>${project.version}</version>
 					<packaging>jar</packaging>
 				</configuration>
