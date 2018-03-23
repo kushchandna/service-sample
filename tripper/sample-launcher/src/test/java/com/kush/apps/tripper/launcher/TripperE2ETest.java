@@ -37,6 +37,7 @@ import com.kush.lib.service.remoting.connect.ServiceConnectionFactory;
 import com.kush.lib.service.remoting.connect.socket.SocketServiceConnectionFactory;
 import com.kush.lib.service.remoting.receiver.socket.ServerSocketServiceRequestReceiver;
 import com.kush.lib.userprofile.servicegen.generated.clients.UserProfileServiceClient;
+import com.kush.service.client.helper.FakeSessionManager;
 import com.kush.utils.id.Identifier;
 
 public class TripperE2ETest {
