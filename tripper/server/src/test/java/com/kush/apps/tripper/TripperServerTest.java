@@ -1,6 +1,7 @@
 package com.kush.apps.tripper;
 
 import static com.google.common.collect.Sets.newHashSet;
+import static com.kush.lib.persistence.helpers.InMemoryPersistor.forType;
 import static java.time.Month.APRIL;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.empty;
@@ -30,12 +31,10 @@ import com.kush.lib.location.api.Place;
 import com.kush.lib.location.api.PlaceFinder;
 import com.kush.lib.location.services.PlaceService;
 import com.kush.lib.persistence.api.Persistor;
-import com.kush.lib.persistence.helpers.InMemoryPersistor;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.lib.service.server.ContextBuilder;
 import com.kush.service.TestApplicationServer;
 import com.kush.utils.id.Identifier;
-import com.kush.utils.id.SequentialIdGenerator;
 
 public class TripperServerTest {
 
@@ -44,9 +43,9 @@ public class TripperServerTest {
 
         @Override
         protected ContextBuilder createContextBuilder() {
-            Persistor<TripPlan> tripPlanPersistor = new InMemoryTripPersistor();
-            Persistor<TripPlanPlace> tripPlanPlacePersistor = new InMemoryTripPlanPlacePersistor();
-            Persistor<TripPlanMember> tripPlanMemberPersistor = new InMemoryTripPlanMemberPersistor();
+            Persistor<TripPlan> tripPlanPersistor = forType(TripPlan.class);
+            Persistor<TripPlanPlace> tripPlanPlacePersistor = forType(TripPlanPlace.class);
+            Persistor<TripPlanMember> tripPlanMemberPersistor = forType(TripPlanMember.class);
             TripPlanPersistor finalPersistor =
                     new DefaultTripPersistor(tripPlanPersistor, tripPlanPlacePersistor, tripPlanMemberPersistor);
             return ContextBuilder.create()
@@ -146,41 +145,5 @@ public class TripperServerTest {
         tripPlannerService.addPlacesToTripPlan(tripPlan.getId(), places);
         tripPlannerService.addMembersToTripPlan(tripPlan.getId(), memberUserIds);
         server.endSession();
-    }
-
-    private static final class InMemoryTripPersistor extends InMemoryPersistor<TripPlan> {
-
-        private InMemoryTripPersistor() {
-            super(new SequentialIdGenerator());
-        }
-
-        @Override
-        protected TripPlan createPersistableObject(Identifier id, TripPlan reference) {
-            return new TripPlan(id, reference.getCreatedBy(), reference.getTripPlanName(), reference.getDuration());
-        }
-    }
-
-    private static final class InMemoryTripPlanPlacePersistor extends InMemoryPersistor<TripPlanPlace> {
-
-        private InMemoryTripPlanPlacePersistor() {
-            super(new SequentialIdGenerator());
-        }
-
-        @Override
-        protected TripPlanPlace createPersistableObject(Identifier id, TripPlanPlace reference) {
-            return new TripPlanPlace(id, reference.getTripPlan(), reference.getPlace());
-        }
-    }
-
-    private static final class InMemoryTripPlanMemberPersistor extends InMemoryPersistor<TripPlanMember> {
-
-        private InMemoryTripPlanMemberPersistor() {
-            super(new SequentialIdGenerator());
-        }
-
-        @Override
-        protected TripPlanMember createPersistableObject(Identifier id, TripPlanMember reference) {
-            return new TripPlanMember(id, reference.getTripPlan(), reference.getUserId());
-        }
     }
 }

@@ -14,6 +14,10 @@ public class TripPlanPlace implements Identifiable {
         this(Identifier.NULL, tripPlan, place);
     }
 
+    public TripPlanPlace(Identifier id, TripPlanPlace tripPlanPlace) {
+        this(id, tripPlanPlace.getTripPlan(), tripPlanPlace.getPlace());
+    }
+
     public TripPlanPlace(Identifier id, TripPlan tripPlan, Place place) {
         this.id = id;
         this.tripPlan = tripPlan;

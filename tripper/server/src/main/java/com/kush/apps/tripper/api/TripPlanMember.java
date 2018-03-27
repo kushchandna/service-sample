@@ -13,6 +13,10 @@ public class TripPlanMember implements Identifiable {
         this(Identifier.NULL, tripPlan, userId);
     }
 
+    public TripPlanMember(Identifier id, TripPlanMember tripPlanMember) {
+        this(id, tripPlanMember.getTripPlan(), tripPlanMember.getUserId());
+    }
+
     public TripPlanMember(Identifier id, TripPlan tripPlan, Identifier userId) {
         this.id = id;
         this.tripPlan = tripPlan;

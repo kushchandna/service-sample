@@ -20,6 +20,10 @@ public class TripPlan implements Identifiable, Serializable {
         this(Identifier.NULL, createdBy, tripPlanName, duration);
     }
 
+    public TripPlan(Identifier tripId, TripPlan tripPlan) {
+        this(tripId, tripPlan.getCreatedBy(), tripPlan.getTripPlanName(), tripPlan.getDuration());
+    }
+
     public TripPlan(Identifier tripId, Identifier createdBy, String tripPlanName, Duration duration) {
         this.tripId = tripId;
         this.createdBy = createdBy;
