@@ -21,7 +21,5 @@
 
 	<modules>
 		<module>server</module>
-		<module>sample-client</module>
-		<module>sample-launcher</module>
 	</modules>
 </project>
