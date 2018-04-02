@@ -33,13 +33,13 @@ import com.kush.lib.location.services.PlaceService;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.lib.service.server.ContextBuilder;
-import com.kush.service.TestApplicationServer;
+import com.kush.service.TestApplicationEnvironment;
 import com.kush.utils.id.Identifier;
 
 public class TripperServerTest {
 
     @Rule
-    public final TestApplicationServer server = new TestApplicationServer(5) {
+    public final TestApplicationEnvironment testEnv = new TestApplicationEnvironment(5) {
 
         @Override
         protected ContextBuilder createContextBuilder() {
@@ -60,10 +60,10 @@ public class TripperServerTest {
     @Before
     public void beforeEachTest() throws Exception {
         tripPlannerService = new TripPlannerService();
-        server.registerService(tripPlannerService);
+        testEnv.registerService(tripPlannerService);
 
         placeService = new PlaceService();
-        server.registerService(placeService);
+        testEnv.registerService(placeService);
     }
 
     @Test
@@ -72,20 +72,20 @@ public class TripperServerTest {
         String user2TripPlan2 = "Second Trip Plan";
         String user1TripPlan3 = "Third Trip Plan";
 
-        User[] users = server.getUsers();
+        User[] users = testEnv.getUsers();
         User user1 = users[0];
         User user2 = users[1];
 
-        server.runAuthenticatedOperation(user1, () -> {
+        testEnv.runAuthenticatedOperation(user1, () -> {
             tripPlannerService.createTripPlan(user1TripPlan1);
             tripPlannerService.createTripPlan(user1TripPlan3);
         });
 
-        server.runAuthenticatedOperation(user2, () -> {
+        testEnv.runAuthenticatedOperation(user2, () -> {
             tripPlannerService.createTripPlan(user2TripPlan2);
         });
 
-        server.runAuthenticatedOperation(user1, () -> {
+        testEnv.runAuthenticatedOperation(user1, () -> {
             List<TripPlan> user1CreatedTripPlans = tripPlannerService.getTripPlans();
             assertThat(user1CreatedTripPlans, hasSize(2));
             assertThat(user1CreatedTripPlans.get(0).getTripPlanName(), is(equalTo(user1TripPlan1)));
@@ -94,7 +94,7 @@ public class TripperServerTest {
             assertThat(user1CreatedTripPlans.get(1).getCreatedBy(), is(equalTo(user1.getId())));
         });
 
-        server.runAuthenticatedOperation(user2, () -> {
+        testEnv.runAuthenticatedOperation(user2, () -> {
             List<TripPlan> user2CreatedTripPlans = tripPlannerService.getTripPlans();
             assertThat(user2CreatedTripPlans, hasSize(1));
             assertThat(user2CreatedTripPlans.get(0).getTripPlanName(), is(equalTo(user2TripPlan2)));
@@ -104,7 +104,7 @@ public class TripperServerTest {
 
     @Test
     public void addPlacesToCreatedTripPlan() throws Exception {
-        server.runAuthenticatedOperation(() -> {
+        testEnv.runAuthenticatedOperation(() -> {
             TripPlan tripPlan = tripPlannerService.createTripPlan("Test Trip Plan");
             assertThat(tripPlannerService.getPlacesInTripPlan(tripPlan.getId()), is(empty()));
 
@@ -134,11 +134,11 @@ public class TripperServerTest {
         List<Place> places = asList(place1, place2, place3);
 
         // add members to trip plan
-        User[] users = server.getUsers();
+        User[] users = testEnv.getUsers();
         User tripPlanOwner = users[0];
         Set<Identifier> memberUserIds = newHashSet(users[1].getId(), users[2].getId(), users[3].getId());
 
-        server.runAuthenticatedOperation(tripPlanOwner, () -> {
+        testEnv.runAuthenticatedOperation(tripPlanOwner, () -> {
             TripPlan tripPlan = tripPlannerService.createTripPlan("Test Trip Plan");
             tripPlannerService.setTripPlanDuration(tripPlan.getId(), duration);
             tripPlannerService.addPlacesToTripPlan(tripPlan.getId(), places);
