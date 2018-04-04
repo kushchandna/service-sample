@@ -33,7 +33,7 @@ import com.kush.lib.location.services.PlaceService;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.lib.service.server.ContextBuilder;
-import com.kush.service.TestApplicationEnvironment;
+import com.kush.lib.service.server.TestApplicationEnvironment;
 import com.kush.utils.id.Identifier;
 
 public class TripperServerTest {
