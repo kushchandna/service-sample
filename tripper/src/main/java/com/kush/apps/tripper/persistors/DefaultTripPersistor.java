@@ -1,9 +1,8 @@
 package com.kush.apps.tripper.persistors;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.kush.apps.tripper.api.TripPlan;
 import com.kush.apps.tripper.api.TripPlanMember;
@@ -33,16 +32,8 @@ public class DefaultTripPersistor extends DelegatingPersistor<TripPlan> implemen
     }
 
     @Override
-    public Iterator<TripPlan> getTripPlansForUser(Identifier userId) throws PersistorOperationFailedException {
-        List<TripPlan> tripPlansForUser = new ArrayList<>();
-        Iterator<TripPlan> allTripPlans = fetchAll();
-        while (allTripPlans.hasNext()) {
-            TripPlan tripPlan = allTripPlans.next();
-            if (tripPlan.getCreatedBy().equals(userId)) {
-                tripPlansForUser.add(tripPlan);
-            }
-        }
-        return tripPlansForUser.iterator();
+    public List<TripPlan> getTripPlansForUser(Identifier userId) throws PersistorOperationFailedException {
+        return fetch(p -> p.getCreatedBy().equals(userId));
     }
 
     @Override
@@ -55,16 +46,9 @@ public class DefaultTripPersistor extends DelegatingPersistor<TripPlan> implemen
     }
 
     @Override
-    public Iterator<Place> getPlacesInTripPlan(Identifier tripPlanId) throws PersistorOperationFailedException {
-        List<Place> result = new ArrayList<>();
-        Iterator<TripPlanPlace> allTripPlanPlaces = tripPlanPlacePersistor.fetchAll();
-        while (allTripPlanPlaces.hasNext()) {
-            TripPlanPlace tripPlanPlace = allTripPlanPlaces.next();
-            if (tripPlanPlace.getTripPlan().getId().equals(tripPlanId)) {
-                result.add(tripPlanPlace.getPlace());
-            }
-        }
-        return result.iterator();
+    public List<Place> getPlacesInTripPlan(Identifier tripPlanId) throws PersistorOperationFailedException {
+        List<TripPlanPlace> tripPlanPlaces = tripPlanPlacePersistor.fetch(tpp -> tpp.getTripPlan().getId().equals(tripPlanId));
+        return tripPlanPlaces.stream().map(tpp -> tpp.getPlace()).collect(Collectors.toList());
     }
 
     @Override

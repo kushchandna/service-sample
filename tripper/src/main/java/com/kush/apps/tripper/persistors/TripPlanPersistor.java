@@ -1,6 +1,5 @@
 package com.kush.apps.tripper.persistors;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -14,11 +13,11 @@ public interface TripPlanPersistor extends Persistor<TripPlan> {
 
     TripPlan createTripPlan(Identifier createdBy, String tripPlanName) throws PersistorOperationFailedException;
 
-    Iterator<TripPlan> getTripPlansForUser(Identifier userId) throws PersistorOperationFailedException;
+    List<TripPlan> getTripPlansForUser(Identifier userId) throws PersistorOperationFailedException;
 
     void addPlacesToTripPlan(Identifier tripPlanId, List<Place> placesToVisit) throws PersistorOperationFailedException;
 
-    Iterator<Place> getPlacesInTripPlan(Identifier tripPlanId) throws PersistorOperationFailedException;
+    List<Place> getPlacesInTripPlan(Identifier tripPlanId) throws PersistorOperationFailedException;
 
     void addMembersToTripPlan(Identifier tripPlanId, Set<Identifier> userIds) throws PersistorOperationFailedException;
 }
