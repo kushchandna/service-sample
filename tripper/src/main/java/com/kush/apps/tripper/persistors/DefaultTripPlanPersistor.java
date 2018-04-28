@@ -13,12 +13,12 @@ import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.utils.id.Identifier;
 
-public class DefaultTripPersistor extends DelegatingPersistor<TripPlan> implements TripPlanPersistor {
+public class DefaultTripPlanPersistor extends DelegatingPersistor<TripPlan> implements TripPlanPersistor {
 
     private final Persistor<TripPlanPlace> tripPlanPlacePersistor;
     private final Persistor<TripPlanMember> tripPlanMemberPersistor;
 
-    public DefaultTripPersistor(Persistor<TripPlan> delegate, Persistor<TripPlanPlace> tripPlanPlacePersistor,
+    public DefaultTripPlanPersistor(Persistor<TripPlan> delegate, Persistor<TripPlanPlace> tripPlanPlacePersistor,
             Persistor<TripPlanMember> tripPlanMemberPersistor) {
         super(delegate);
         this.tripPlanPlacePersistor = tripPlanPlacePersistor;

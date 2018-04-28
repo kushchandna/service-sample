@@ -23,7 +23,7 @@ import com.kush.apps.tripper.api.Duration;
 import com.kush.apps.tripper.api.TripPlan;
 import com.kush.apps.tripper.api.TripPlanMember;
 import com.kush.apps.tripper.api.TripPlanPlace;
-import com.kush.apps.tripper.persistors.DefaultTripPersistor;
+import com.kush.apps.tripper.persistors.DefaultTripPlanPersistor;
 import com.kush.apps.tripper.persistors.TripPlanPersistor;
 import com.kush.apps.tripper.services.TripPlannerService;
 import com.kush.lib.location.api.Place;
@@ -51,7 +51,7 @@ public class TripperServiceTest extends BaseServiceTest {
         Persistor<TripPlanPlace> tripPlanPlacePersistor = forType(TripPlanPlace.class);
         Persistor<TripPlanMember> tripPlanMemberPersistor = forType(TripPlanMember.class);
         TripPlanPersistor finalPersistor =
-                new DefaultTripPersistor(tripPlanPersistor, tripPlanPlacePersistor, tripPlanMemberPersistor);
+                new DefaultTripPlanPersistor(tripPlanPersistor, tripPlanPlacePersistor, tripPlanMemberPersistor);
         addToContext(TripPlanPersistor.class, finalPersistor);
         addToContext(PlaceFinder.class, new DummyPlaceFinder());
     }
