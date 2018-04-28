@@ -94,6 +94,11 @@ public class TripPlannerService extends BaseService {
         }
     }
 
+    @Override
+    protected void processContext() {
+        checkContextHasValueFor(TripPlanPersistor.class);
+    }
+
     private TripPlan getTripPlanForId(Identifier tripPlanId, TripPlanPersistor persistor) throws ServiceRequestFailedException {
         try {
             return persistor.fetch(tripPlanId);
