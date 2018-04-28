@@ -34,7 +34,7 @@ import com.kush.lib.service.remoting.auth.User;
 import com.kush.lib.service.server.BaseServiceTest;
 import com.kush.utils.id.Identifier;
 
-public class TripperServerTest extends BaseServiceTest {
+public class TripperServiceTest extends BaseServiceTest {
 
     private TripPlannerService tripPlannerService;
     private PlaceService placeService;

@@ -11,6 +11,7 @@
 
 	<name>tripper</name>
 	<artifactId>tripper</artifactId>
+	<groupId>com.kush.apps</groupId>
 
 	<url>http://maven.apache.org</url>
 
@@ -85,7 +86,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.kush.lib</groupId>
-			<artifactId>user-profile</artifactId>
+			<artifactId>profile</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -111,5 +112,4 @@
 			<classifier>tests</classifier>
 		</dependency>
 	</dependencies>
-	<groupId>com.kush.apps</groupId>
 </project>
