@@ -41,12 +41,6 @@ public class TripperServiceTest extends BaseServiceTest {
 
     @Before
     public void beforeEachTest() throws Exception {
-        tripPlannerService = new TripPlannerService();
-        registerService(tripPlannerService);
-
-        placeService = new PlaceService();
-        registerService(placeService);
-
         Persistor<TripPlan> tripPlanPersistor = forType(TripPlan.class);
         Persistor<TripPlanPlace> tripPlanPlacePersistor = forType(TripPlanPlace.class);
         Persistor<TripPlanMember> tripPlanMemberPersistor = forType(TripPlanMember.class);
@@ -54,6 +48,12 @@ public class TripperServiceTest extends BaseServiceTest {
                 new DefaultTripPlanPersistor(tripPlanPersistor, tripPlanPlacePersistor, tripPlanMemberPersistor);
         addToContext(TripPlanPersistor.class, finalPersistor);
         addToContext(PlaceFinder.class, new DummyPlaceFinder());
+
+        tripPlannerService = new TripPlannerService();
+        registerService(tripPlannerService);
+
+        placeService = new PlaceService();
+        registerService(placeService);
     }
 
     @Test
