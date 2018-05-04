@@ -28,16 +28,11 @@
 						<version>${project.version}</version>
 					</dependency>
 				</dependencies>
-				<configuration>
-					<services>
-						<service>com.kush.apps.tripper.services.TripPlannerService</service>
-					</services>
-				</configuration>
 				<executions>
 					<execution>
 						<id>generate service clients</id>
 						<goals>
-							<goal>generate-service-clients</goal>
+							<goal>generate</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -76,6 +71,39 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>com.kush</groupId>
+										<artifactId>
+											serviceclient-maven-plugin
+										</artifactId>
+										<versionRange>
+											[0.0.1-SNAPSHOT,)
+										</versionRange>
+										<goals>
+											<goal>generate</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<dependencies>
