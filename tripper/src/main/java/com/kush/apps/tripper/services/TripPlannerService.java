@@ -22,7 +22,7 @@ import com.kush.utils.id.Identifier;
 public class TripPlannerService extends BaseService {
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Create Trip Plan")
+    @ServiceMethod
     public TripPlan createTripPlan(String tripPlanName) throws PersistorOperationFailedException {
         User currentUser = getCurrentUser();
         TripPlanPersistor persistor = getInstance(TripPlanPersistor.class);
@@ -30,7 +30,7 @@ public class TripPlannerService extends BaseService {
     }
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Add Places To Trip Plan")
+    @ServiceMethod
     public void addPlacesToTripPlan(Identifier tripPlanId, List<Place> placesToVisit)
             throws PersistorOperationFailedException, ValidationFailedException {
         TripPlanPersistor persistor = getInstance(TripPlanPersistor.class);
@@ -39,7 +39,7 @@ public class TripPlannerService extends BaseService {
     }
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Get Places In Trip Plan")
+    @ServiceMethod
     public List<Place> getPlacesInTripPlan(Identifier tripPlanId)
             throws PersistorOperationFailedException, ValidationFailedException {
         TripPlanPersistor persistor = getInstance(TripPlanPersistor.class);
@@ -48,7 +48,7 @@ public class TripPlannerService extends BaseService {
     }
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Get Trip Plans")
+    @ServiceMethod
     public List<TripPlan> getTripPlans() throws PersistorOperationFailedException {
         User currentUser = getCurrentUser();
         TripPlanPersistor tripPlanPersistor = getInstance(TripPlanPersistor.class);
@@ -56,7 +56,7 @@ public class TripPlannerService extends BaseService {
     }
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Set Trip Plan Duration")
+    @ServiceMethod
     public void setTripPlanDuration(Identifier tripPlanId, Duration duration)
             throws PersistorOperationFailedException, ValidationFailedException {
         TripPlanPersistor persistor = getInstance(TripPlanPersistor.class);
@@ -66,7 +66,7 @@ public class TripPlannerService extends BaseService {
     }
 
     @AuthenticationRequired
-    @ServiceMethod(name = "Add Members To Trip Plan")
+    @ServiceMethod
     public void addMembersToTripPlan(Identifier tripPlanId, Set<Identifier> memberUserIds)
             throws PersistorOperationFailedException, ValidationFailedException {
         TripPlanPersistor persistor = getInstance(TripPlanPersistor.class);
