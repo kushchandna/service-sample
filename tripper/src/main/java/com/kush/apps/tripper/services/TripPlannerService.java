@@ -18,7 +18,7 @@ import com.kush.lib.service.server.authentication.AuthenticationRequired;
 import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifier;
 
-@Service(name = "Trip Planner")
+@Service
 public class TripPlannerService extends BaseService {
 
     @AuthenticationRequired
