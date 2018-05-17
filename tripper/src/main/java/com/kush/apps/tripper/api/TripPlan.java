@@ -2,7 +2,7 @@ package com.kush.apps.tripper.api;
 
 import java.io.Serializable;
 
-import com.kush.lib.service.server.annotations.Exportable;
+import com.kush.service.annotations.Exportable;
 import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
 

@@ -13,12 +13,12 @@ import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
 import com.kush.lib.service.remoting.StartupFailedException;
 import com.kush.lib.service.remoting.receiver.socket.ServerSocketServiceRequestReceiver;
-import com.kush.lib.service.server.ApplicationServer;
-import com.kush.lib.service.server.Context;
-import com.kush.lib.service.server.ContextBuilder;
-import com.kush.lib.service.server.authentication.credential.DefaultUserCredentialPersistor;
-import com.kush.lib.service.server.authentication.credential.UserCredential;
-import com.kush.lib.service.server.authentication.credential.UserCredentialPersistor;
+import com.kush.service.ApplicationServer;
+import com.kush.service.Context;
+import com.kush.service.ContextBuilder;
+import com.kush.service.auth.credentials.DefaultUserCredentialPersistor;
+import com.kush.service.auth.credentials.UserCredential;
+import com.kush.service.auth.credentials.UserCredentialPersistor;
 
 public class SampleTripperServer {
 

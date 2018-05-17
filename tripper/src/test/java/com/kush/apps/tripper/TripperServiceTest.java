@@ -31,7 +31,7 @@ import com.kush.lib.location.api.PlaceFinder;
 import com.kush.lib.location.services.PlaceService;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.service.remoting.auth.User;
-import com.kush.lib.service.server.BaseServiceTest;
+import com.kush.service.BaseServiceTest;
 import com.kush.utils.id.Identifier;
 
 public class TripperServiceTest extends BaseServiceTest {

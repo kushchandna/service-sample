@@ -3,7 +3,7 @@ package com.kush.apps.tripper.api;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import com.kush.lib.service.server.annotations.Exportable;
+import com.kush.service.annotations.Exportable;
 
 @Exportable
 public class Duration implements Serializable {
