@@ -18,9 +18,9 @@ import com.kush.service.ContextBuilder;
 import com.kush.service.auth.credentials.DefaultUserCredentialPersistor;
 import com.kush.service.auth.credentials.UserCredential;
 import com.kush.service.auth.credentials.UserCredentialPersistor;
-import com.kush.utils.remoting.server.ResolvableProcessor;
+import com.kush.utils.remoting.server.ResolutionRequestsReceiver;
 import com.kush.utils.remoting.server.StartupFailedException;
-import com.kush.utils.remoting.server.socket.SocketBasedResolvableProcessor;
+import com.kush.utils.remoting.server.socket.SocketBasedResolutionRequestsProcessor;
 
 public class SampleTripperServer {
 
@@ -40,7 +40,7 @@ public class SampleTripperServer {
         ApplicationServer server = new ApplicationServer();
 
         Executor executor = Executors.newFixedThreadPool(3);
-        ResolvableProcessor<ServiceRequest> requestReceiver = new SocketBasedResolvableProcessor<>(executor, PORT);
+        ResolutionRequestsReceiver<ServiceRequest> requestReceiver = new SocketBasedResolutionRequestsProcessor<>(executor, PORT);
         server.registerServiceRequestReceiver(requestReceiver);
 
         server.registerService(TripPlannerService.class);
