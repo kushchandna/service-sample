@@ -11,7 +11,6 @@ import com.kush.apps.tripper.persistors.TripPlanPersistor;
 import com.kush.apps.tripper.services.TripPlannerService;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
-import com.kush.lib.service.remoting.ServiceRequest;
 import com.kush.service.ApplicationServer;
 import com.kush.service.Context;
 import com.kush.service.ContextBuilder;
@@ -40,7 +39,7 @@ public class SampleTripperServer {
         ApplicationServer server = new ApplicationServer();
 
         Executor executor = Executors.newFixedThreadPool(3);
-        ResolutionRequestsReceiver<ServiceRequest> requestReceiver = new SocketBasedResolutionRequestsProcessor<>(executor, PORT);
+        ResolutionRequestsReceiver requestReceiver = new SocketBasedResolutionRequestsProcessor(executor, PORT);
         server.registerServiceRequestReceiver(requestReceiver);
 
         server.registerService(TripPlannerService.class);
