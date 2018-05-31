@@ -36,11 +36,9 @@ public class SampleTripperServer {
 
     private static void startServer() throws StartupFailedException {
 
-        ApplicationServer server = new ApplicationServer();
-
         Executor executor = Executors.newFixedThreadPool(3);
         ResolutionRequestsReceiver requestReceiver = new SocketBasedResolutionRequestsProcessor(executor, PORT);
-        server.registerServiceRequestReceiver(requestReceiver);
+        ApplicationServer server = new ApplicationServer(requestReceiver);
 
         server.registerService(TripPlannerService.class);
 
