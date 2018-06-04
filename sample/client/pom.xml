@@ -14,4 +14,12 @@
 	<name>sample-client</name>
 	<artifactId>sample-client</artifactId>
 	
+	<dependencies>
+		<dependency>
+			<groupId>com.kush</groupId>
+			<artifactId>service-client</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+	
 </project>
