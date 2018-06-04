@@ -12,7 +12,6 @@
 	</parent>
 
 	<name>sample-client</name>
-	<groupId>com.kush.apps</groupId>
 	<artifactId>sample-client</artifactId>
 	
 </project>

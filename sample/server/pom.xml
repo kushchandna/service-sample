@@ -12,7 +12,6 @@
 	</parent>
 
 	<name>sample-server</name>
-	<groupId>com.kush.apps</groupId>
 	<artifactId>sample-server</artifactId>
 	
 </project>
