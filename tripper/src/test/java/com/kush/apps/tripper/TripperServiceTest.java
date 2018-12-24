@@ -48,12 +48,8 @@ public class TripperServiceTest extends BaseServiceTest {
                 new DefaultTripPlanPersistor(tripPlanPersistor, tripPlanPlacePersistor, tripPlanMemberPersistor);
         addToContext(TripPlanPersistor.class, finalPersistor);
         addToContext(PlaceFinder.class, new DummyPlaceFinder());
-
-        tripPlannerService = new TripPlannerService();
-        registerService(tripPlannerService);
-
-        placeService = new PlaceService();
-        registerService(placeService);
+        tripPlannerService = registerService(TripPlannerService.class);
+        placeService = registerService(PlaceService.class);
     }
 
     @Test
