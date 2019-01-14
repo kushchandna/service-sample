@@ -31,7 +31,8 @@ Executing trip
 - Pick everyone or gather at a place
 - Use checklist of items to verify if something has been missed
 - Get updates on status of trains or flights
-- Share photographs and videos with all on the go 
+- Share photographs and videos with all on the go
+- See map with route to next place 
 - Upload photographs or videos to social media like facebook, instagram, twitter etc
 - Keep track of every individual's locations during trip
 - Get suggestions on nearby events
@@ -53,3 +54,4 @@ Add-ons
 - Know about places where phone networks don't work and know ways to contact family
 - Write blogs about experiences
 - Rate hotels and amenities
+- Do shopping for the trip
