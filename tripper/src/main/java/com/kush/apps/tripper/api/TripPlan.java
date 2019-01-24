@@ -1,7 +1,9 @@
 package com.kush.apps.tripper.api;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 
+import com.kush.lib.group.entities.Group;
 import com.kush.service.annotations.Exportable;
 import com.kush.utils.id.Identifiable;
 import com.kush.utils.id.Identifier;
@@ -12,23 +14,23 @@ public class TripPlan implements Identifiable, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Identifier tripId;
-    private final Identifier createdBy;
-    private final String tripPlanName;
-    private final Duration duration;
+    private final Identifier ownerUser;
+    private Group tripGroup;
+    private final ZonedDateTime creationTime;
 
-    public TripPlan(Identifier createdBy, String tripPlanName, Duration duration) {
-        this(Identifier.NULL, createdBy, tripPlanName, duration);
+    public TripPlan(Identifier ownerUser, Group tripGroup, ZonedDateTime creationTime) {
+        this(Identifier.NULL, ownerUser, tripGroup, creationTime);
     }
 
     public TripPlan(Identifier tripId, TripPlan tripPlan) {
-        this(tripId, tripPlan.getCreatedBy(), tripPlan.getTripPlanName(), tripPlan.getDuration());
+        this(tripId, tripPlan.getOwnerUser(), tripPlan.getTripGroup(), tripPlan.getCreationTime());
     }
 
-    public TripPlan(Identifier tripId, Identifier createdBy, String tripPlanName, Duration duration) {
+    public TripPlan(Identifier tripId, Identifier ownerUser, Group tripGroup, ZonedDateTime creationTime) {
         this.tripId = tripId;
-        this.createdBy = createdBy;
-        this.tripPlanName = tripPlanName;
-        this.duration = duration;
+        this.ownerUser = ownerUser;
+        this.setTripGroup(tripGroup);
+        this.creationTime = creationTime;
     }
 
     @Override
@@ -36,15 +38,19 @@ public class TripPlan implements Identifiable, Serializable {
         return tripId;
     }
 
-    public Identifier getCreatedBy() {
-        return createdBy;
+    public Identifier getOwnerUser() {
+        return ownerUser;
     }
 
-    public String getTripPlanName() {
-        return tripPlanName;
+    public ZonedDateTime getCreationTime() {
+        return creationTime;
     }
 
-    public Duration getDuration() {
-        return duration;
+    public Group getTripGroup() {
+        return tripGroup;
+    }
+
+    public void setTripGroup(Group tripGroup) {
+        this.tripGroup = tripGroup;
     }
 }

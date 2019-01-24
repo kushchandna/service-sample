@@ -1,16 +1,16 @@
 package com.kush.apps.tripper.services;
 
-import static com.google.common.collect.Lists.newArrayList;
-
+import java.time.Clock;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 
-import com.kush.apps.tripper.api.Duration;
 import com.kush.apps.tripper.api.TripPlan;
 import com.kush.apps.tripper.persistors.TripPlanPersistor;
-import com.kush.lib.location.api.Place;
+import com.kush.lib.group.entities.Group;
+import com.kush.lib.group.entities.GroupMembership;
+import com.kush.lib.group.service.UserGroupService;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
-import com.kush.lib.service.remoting.auth.User;
 import com.kush.service.BaseService;
 import com.kush.service.annotations.Service;
 import com.kush.service.annotations.ServiceMethod;
@@ -21,79 +21,52 @@ import com.kush.utils.id.Identifier;
 @Service
 public class TripPlannerService extends BaseService {
 
-    @AuthenticationRequired
     @ServiceMethod
-    public TripPlan createTripPlan(String tripPlanName) throws PersistorOperationFailedException {
-        User currentUser = getCurrentUser();
-        TripPlanPersistor persistor = getInstance(TripPlanPersistor.class);
-        return persistor.createTripPlan(currentUser.getId(), tripPlanName);
+    @AuthenticationRequired
+    public TripPlan createTripPlan() throws PersistorOperationFailedException {
+        Identifier currentUserId = getCurrentUser().getId();
+        Clock clock = getInstance(Clock.class);
+        ZonedDateTime currentTime = ZonedDateTime.now(clock);
+
+        UserGroupService userGroupService = getUserGroupService();
+        Group tripGroup = userGroupService.createGroup("<trip-group>");
+
+        TripPlanPersistor tripPlanPersistor = getTripPlanPersistor();
+        return tripPlanPersistor.createTripPlan(currentUserId, tripGroup, currentTime);
     }
 
-    @AuthenticationRequired
     @ServiceMethod
-    public void addPlacesToTripPlan(Identifier tripPlanId, List<Place> placesToVisit)
+    @AuthenticationRequired
+    public void addMembersToTrip(Identifier tripPlanId, Set<Identifier> userIds)
             throws PersistorOperationFailedException, ValidationFailedException {
-        TripPlanPersistor persistor = getInstance(TripPlanPersistor.class);
-        validateTripPlanBelongsToCurrentUser(persistor, tripPlanId);
-        persistor.addPlacesToTripPlan(tripPlanId, placesToVisit);
-    }
+        Identifier currentUserId = getCurrentUser().getId();
 
-    @AuthenticationRequired
-    @ServiceMethod
-    public List<Place> getPlacesInTripPlan(Identifier tripPlanId)
-            throws PersistorOperationFailedException, ValidationFailedException {
-        TripPlanPersistor persistor = getInstance(TripPlanPersistor.class);
-        validateTripPlanBelongsToCurrentUser(persistor, tripPlanId);
-        return newArrayList(persistor.getPlacesInTripPlan(tripPlanId));
-    }
+        TripPlanPersistor tripPlanPersistor = getTripPlanPersistor();
+        TripPlan tripPlan = tripPlanPersistor.fetch(tripPlanId);
 
-    @AuthenticationRequired
-    @ServiceMethod
-    public List<TripPlan> getTripPlans() throws PersistorOperationFailedException {
-        User currentUser = getCurrentUser();
-        TripPlanPersistor tripPlanPersistor = getInstance(TripPlanPersistor.class);
-        return newArrayList(tripPlanPersistor.getTripPlansForUser(currentUser.getId()));
-    }
+        Group tripGroup = tripPlan.getTripGroup();
+        UserGroupService userGroupService = getUserGroupService();
+        List<GroupMembership> groupMemberships = userGroupService.getGroupMembers(tripGroup.getId());
 
-    @AuthenticationRequired
-    @ServiceMethod
-    public void setTripPlanDuration(Identifier tripPlanId, Duration duration)
-            throws PersistorOperationFailedException, ValidationFailedException {
-        TripPlanPersistor persistor = getInstance(TripPlanPersistor.class);
-        TripPlan tripPlan = validateTripPlanBelongsToCurrentUser(persistor, tripPlanId);
-        TripPlan updatedTripPlan = new TripPlan(tripPlan.getId(), tripPlan.getCreatedBy(), tripPlan.getTripPlanName(), duration);
-        persistor.save(updatedTripPlan);
-    }
+        boolean currentUserIsMember = groupMemberships.stream().anyMatch(m -> m.getMember().equals(currentUserId));
+        if (!currentUserIsMember) {
+            throw new ValidationFailedException("User [%s] is not a trip member", currentUserId);
+        }
 
-    @AuthenticationRequired
-    @ServiceMethod
-    public void addMembersToTripPlan(Identifier tripPlanId, Set<Identifier> memberUserIds)
-            throws PersistorOperationFailedException, ValidationFailedException {
-        TripPlanPersistor persistor = getInstance(TripPlanPersistor.class);
-        validateTripPlanBelongsToCurrentUser(persistor, tripPlanId);
-        persistor.addMembersToTripPlan(tripPlanId, memberUserIds);
+        userGroupService.addMembers(tripGroup.getId(), userIds);
     }
 
     @Override
     protected void processContext() {
         checkContextHasValueFor(TripPlanPersistor.class);
+        checkContextHasValueFor(UserGroupService.class);
     }
 
-    private TripPlan getTripPlanForId(Identifier tripPlanId, TripPlanPersistor persistor)
-            throws PersistorOperationFailedException {
-        return persistor.fetch(tripPlanId);
+    private UserGroupService getUserGroupService() {
+        return getInstance(UserGroupService.class);
     }
 
-    private TripPlan validateTripPlanBelongsToCurrentUser(TripPlanPersistor persistor, Identifier tripPlanId)
-            throws PersistorOperationFailedException, ValidationFailedException {
-        User currentUser = getCurrentUser();
-        TripPlan tripPlan = getTripPlanForId(tripPlanId, persistor);
-        if (tripPlan == null) {
-            throw new ValidationFailedException("No trip plan with specified id found");
-        }
-        if (!tripPlan.getCreatedBy().equals(currentUser.getId())) {
-            throw new ValidationFailedException("Operation only supported for trip plans created by current user");
-        }
-        return tripPlan;
+    private TripPlanPersistor getTripPlanPersistor() {
+        return getInstance(TripPlanPersistor.class);
     }
 }

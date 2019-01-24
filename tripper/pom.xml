@@ -119,6 +119,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.kush.lib</groupId>
+			<artifactId>group</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.kush.lib</groupId>
 			<artifactId>location</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
