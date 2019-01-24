@@ -19,7 +19,7 @@ import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifier;
 
 @Service
-public class TripPlannerService extends BaseService {
+public class TripperPlanningService extends BaseService {
 
     @ServiceMethod
     @AuthenticationRequired

@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableMap;
 import com.kush.apps.tripper.api.TripPlan;
 import com.kush.apps.tripper.persistors.DefaultTripPlanPersistor;
 import com.kush.apps.tripper.persistors.TripPlanPersistor;
-import com.kush.apps.tripper.services.TripPlannerService;
+import com.kush.apps.tripper.services.TripperPlanningService;
 import com.kush.apps.tripper.services.TripperUserProfileService;
 import com.kush.lib.group.entities.DefaultGroupPersistor;
 import com.kush.lib.group.entities.Group;
@@ -50,14 +50,14 @@ public class TripperE2E extends BaseServiceTest {
             "thirduser@domain.com"
     };
 
-    private TripPlannerService tripPlannerService;
+    private TripperPlanningService tripperPlanningService;
     private TripperUserProfileService tripperUserProfileService;
 
     @Before
     public void setup() throws Exception {
         setupUserGroupService();
         setupTripPlannerPersistor();
-        tripPlannerService = registerService(TripPlannerService.class);
+        tripperPlanningService = registerService(TripperPlanningService.class);
 
         setupUserProfileService();
         tripperUserProfileService = registerService(TripperUserProfileService.class);
@@ -86,11 +86,11 @@ public class TripperE2E extends BaseServiceTest {
             throws PersistorOperationFailedException, ValidationFailedException {
         List<User> foundUsers = tripperUserProfileService.findMatchingUsers(userFilter);
         Set<Identifier> userIdsToAdd = foundUsers.stream().map(u -> u.getId()).collect(toSet());
-        tripPlannerService.addMembersToTrip(tripPlan.getId(), userIdsToAdd);
+        tripperPlanningService.addMembersToTrip(tripPlan.getId(), userIdsToAdd);
     }
 
     private TripPlan createTripPlan() throws PersistorOperationFailedException {
-        return tripPlannerService.createTripPlan();
+        return tripperPlanningService.createTripPlan();
     }
 
     private void updateNameAndEmail(User user, String name, String email) throws Exception {
