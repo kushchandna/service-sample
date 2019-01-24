@@ -1,5 +1,7 @@
 package com.kush.apps.tripper.services;
 
+import static java.util.stream.Collectors.toList;
+
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -54,6 +56,16 @@ public class TripperPlanningService extends BaseService {
         }
 
         userGroupService.addMembers(tripGroup.getId(), userIds);
+    }
+
+    @ServiceMethod
+    @AuthenticationRequired
+    public List<TripPlan> getTripPlans() throws PersistorOperationFailedException {
+        UserGroupService userGroupService = getUserGroupService();
+        List<Group> groups = userGroupService.getGroups();
+        List<Identifier> groupIds = groups.stream().map(g -> g.getId()).collect(toList());
+        TripPlanPersistor tripPlanPersistor = getTripPlanPersistor();
+        return tripPlanPersistor.fetch(plan -> groupIds.contains(plan.getTripGroup().getId()));
     }
 
     @Override
