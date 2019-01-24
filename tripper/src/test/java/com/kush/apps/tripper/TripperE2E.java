@@ -15,6 +15,7 @@ import com.google.common.collect.ImmutableMap;
 import com.kush.apps.tripper.api.TripPlan;
 import com.kush.apps.tripper.persistors.DefaultTripPlanPersistor;
 import com.kush.apps.tripper.persistors.TripPlanPersistor;
+import com.kush.apps.tripper.services.TripperMessagingService;
 import com.kush.apps.tripper.services.TripperPlanningService;
 import com.kush.apps.tripper.services.TripperProfileService;
 import com.kush.lib.group.entities.DefaultGroupPersistor;
@@ -35,6 +36,11 @@ import com.kush.lib.profile.services.UserProfileService;
 import com.kush.lib.profile.template.ProfileTemplate;
 import com.kush.lib.profile.template.ProfileTemplateBuilder;
 import com.kush.lib.service.remoting.auth.User;
+import com.kush.messaging.content.TextContent;
+import com.kush.messaging.message.Message;
+import com.kush.messaging.persistors.DefaultMessagePersistor;
+import com.kush.messaging.persistors.MessagePersistor;
+import com.kush.messaging.services.MessagingService;
 import com.kush.service.BaseServiceTest;
 import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifier;
@@ -52,6 +58,7 @@ public class TripperE2E extends BaseServiceTest {
 
     private TripperPlanningService tripperPlanningService;
     private TripperProfileService tripperProfileService;
+    private TripperMessagingService tripperMessagingService;
 
     @Before
     public void setup() throws Exception {
@@ -61,6 +68,9 @@ public class TripperE2E extends BaseServiceTest {
 
         setupUserProfileService();
         tripperProfileService = registerService(TripperProfileService.class);
+
+        setupMessagingService();
+        tripperMessagingService = registerService(TripperMessagingService.class);
     }
 
     @Test
@@ -79,6 +89,11 @@ public class TripperE2E extends BaseServiceTest {
             Map<String, Set<Object>> userFilter = ImmutableMap.of(FIELD_EMAIL,
                     new HashSet<>(asList(EMAILS_IN_CONTACTS)));
             addTripMembers(tripPlan, userFilter);
+
+            tripperMessagingService.sendMessage(tripPlan.getId(), new TextContent("Test Message"));
+
+            List<Message> messages = tripperMessagingService.getMessages(tripPlan.getId());
+            System.out.println(messages);
         });
     }
 
@@ -137,8 +152,7 @@ public class TripperE2E extends BaseServiceTest {
     private void setupUserProfileService() throws Exception {
         setupProfilePersistor();
         setupProfileTemplate();
-        UserProfileService userProfileService = registerService(UserProfileService.class);
-        addToContext(UserProfileService.class, userProfileService);
+        registerService(UserProfileService.class);
     }
 
     private void setupUserGroupService() throws Exception {
@@ -146,8 +160,12 @@ public class TripperE2E extends BaseServiceTest {
         Persistor<GroupMembership> memPers = InMemoryPersistor.forType(GroupMembership.class);
         GroupPersistor groupPersistor = new DefaultGroupPersistor(groupPers, memPers);
         addToContext(GroupPersistor.class, groupPersistor);
+        registerService(UserGroupService.class);
+    }
 
-        UserGroupService userGroupService = registerService(UserGroupService.class);
-        addToContext(UserGroupService.class, userGroupService);
+    private void setupMessagingService() throws Exception {
+        MessagePersistor messagePersistor = new DefaultMessagePersistor(InMemoryPersistor.forType(Message.class));
+        addToContext(MessagePersistor.class, messagePersistor);
+        registerService(MessagingService.class);
     }
 }

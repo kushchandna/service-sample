@@ -2,6 +2,7 @@ package com.kush.apps.tripper.services;
 
 import static java.util.Collections.singleton;
 
+import java.util.List;
 import java.util.Set;
 
 import com.kush.apps.tripper.api.TripPlan;
@@ -23,12 +24,9 @@ public class TripperMessagingService extends BaseService {
     @AuthenticationRequired
     @ServiceMethod
     public Message sendMessage(Identifier tripPlanId, Content content) throws PersistorOperationFailedException {
-        TripPlanPersistor tripPlanPersistor = getTripPlanPersistor();
-        TripPlan tripPlan = tripPlanPersistor.fetch(tripPlanId);
-        Identifier tripGroupId = tripPlan.getTripGroup().getId();
-        MessagingService messagingService = getMessagingService();
+        Identifier tripGroupId = getTripPlanGroupId(tripPlanId);
         Set<Destination> destinations = singleton(new GroupIdBasedDestination(tripGroupId));
-        return messagingService.sendMessage(content, destinations);
+        return getMessagingService().sendMessage(content, destinations);
     }
 
     @AuthenticationRequired
@@ -43,6 +41,13 @@ public class TripperMessagingService extends BaseService {
         getMessagingService().unregisterMessageHandler(messageHandler);
     }
 
+    @AuthenticationRequired
+    @ServiceMethod
+    public List<Message> getMessages(Identifier tripPlanId) throws PersistorOperationFailedException {
+        Identifier tripPlanGroupId = getTripPlanGroupId(tripPlanId);
+        return getMessagingService().getMessagesInGroup(tripPlanGroupId);
+    }
+
     @Override
     protected void processContext() {
         checkContextHasValueFor(MessagingService.class);
@@ -54,5 +59,11 @@ public class TripperMessagingService extends BaseService {
 
     private MessagingService getMessagingService() {
         return getInstance(MessagingService.class);
+    }
+
+    private Identifier getTripPlanGroupId(Identifier tripPlanId) throws PersistorOperationFailedException {
+        TripPlanPersistor tripPlanPersistor = getTripPlanPersistor();
+        TripPlan tripPlan = tripPlanPersistor.fetch(tripPlanId);
+        return tripPlan.getTripGroup().getId();
     }
 }
