@@ -14,7 +14,7 @@ import com.kush.service.auth.AuthenticationRequired;
 import com.kush.utils.exceptions.ValidationFailedException;
 
 @Service
-public class TripperUserProfileService extends BaseService {
+public class TripperProfileService extends BaseService {
 
     @ServiceMethod
     @AuthenticationRequired

@@ -16,7 +16,7 @@ import com.kush.apps.tripper.api.TripPlan;
 import com.kush.apps.tripper.persistors.DefaultTripPlanPersistor;
 import com.kush.apps.tripper.persistors.TripPlanPersistor;
 import com.kush.apps.tripper.services.TripperPlanningService;
-import com.kush.apps.tripper.services.TripperUserProfileService;
+import com.kush.apps.tripper.services.TripperProfileService;
 import com.kush.lib.group.entities.DefaultGroupPersistor;
 import com.kush.lib.group.entities.Group;
 import com.kush.lib.group.entities.GroupMembership;
@@ -51,7 +51,7 @@ public class TripperE2E extends BaseServiceTest {
     };
 
     private TripperPlanningService tripperPlanningService;
-    private TripperUserProfileService tripperUserProfileService;
+    private TripperProfileService tripperProfileService;
 
     @Before
     public void setup() throws Exception {
@@ -60,7 +60,7 @@ public class TripperE2E extends BaseServiceTest {
         tripperPlanningService = registerService(TripperPlanningService.class);
 
         setupUserProfileService();
-        tripperUserProfileService = registerService(TripperUserProfileService.class);
+        tripperProfileService = registerService(TripperProfileService.class);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class TripperE2E extends BaseServiceTest {
 
     private void addTripMembers(TripPlan tripPlan, Map<String, Set<Object>> userFilter)
             throws PersistorOperationFailedException, ValidationFailedException {
-        List<User> foundUsers = tripperUserProfileService.findMatchingUsers(userFilter);
+        List<User> foundUsers = tripperProfileService.findMatchingUsers(userFilter);
         Set<Identifier> userIdsToAdd = foundUsers.stream().map(u -> u.getId()).collect(toSet());
         tripperPlanningService.addMembersToTrip(tripPlan.getId(), userIdsToAdd);
     }
@@ -95,8 +95,8 @@ public class TripperE2E extends BaseServiceTest {
 
     private void updateNameAndEmail(User user, String name, String email) throws Exception {
         runAuthenticatedOperation(user, () -> {
-            tripperUserProfileService.updateProfileField(FIELD_NAME, name);
-            tripperUserProfileService.updateProfileField(FIELD_EMAIL, email);
+            tripperProfileService.updateProfileField(FIELD_NAME, name);
+            tripperProfileService.updateProfileField(FIELD_EMAIL, email);
         });
     }
 
