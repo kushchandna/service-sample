@@ -16,6 +16,12 @@ import com.kush.apps.tripper.api.TripPlan;
 import com.kush.apps.tripper.persistors.DefaultTripPlanPersistor;
 import com.kush.apps.tripper.persistors.TripPlanPersistor;
 import com.kush.apps.tripper.services.TripPlannerService;
+import com.kush.apps.tripper.services.TripperUserProfileService;
+import com.kush.lib.group.entities.DefaultGroupPersistor;
+import com.kush.lib.group.entities.Group;
+import com.kush.lib.group.entities.GroupMembership;
+import com.kush.lib.group.persistors.GroupPersistor;
+import com.kush.lib.group.service.UserGroupService;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.lib.persistence.helpers.InMemoryPersistor;
@@ -44,17 +50,17 @@ public class TripperE2E extends BaseServiceTest {
             "thirduser@domain.com"
     };
 
-    private UserProfileService userProfileService;
     private TripPlannerService tripPlannerService;
+    private TripperUserProfileService tripperUserProfileService;
 
     @Before
     public void setup() throws Exception {
-        setupProfilePersistor();
-        setupProfileTemplate();
-        userProfileService = registerService(UserProfileService.class);
-
+        setupUserGroupService();
         setupTripPlannerPersistor();
         tripPlannerService = registerService(TripPlannerService.class);
+
+        setupUserProfileService();
+        tripperUserProfileService = registerService(TripperUserProfileService.class);
     }
 
     @Test
@@ -78,7 +84,7 @@ public class TripperE2E extends BaseServiceTest {
 
     private void addTripMembers(TripPlan tripPlan, Map<String, Set<Object>> userFilter)
             throws PersistorOperationFailedException, ValidationFailedException {
-        List<User> foundUsers = userProfileService.findMatchingUsers(userFilter);
+        List<User> foundUsers = tripperUserProfileService.findMatchingUsers(userFilter);
         Set<Identifier> userIdsToAdd = foundUsers.stream().map(u -> u.getId()).collect(toSet());
         tripPlannerService.addMembersToTrip(tripPlan.getId(), userIdsToAdd);
     }
@@ -89,8 +95,8 @@ public class TripperE2E extends BaseServiceTest {
 
     private void updateNameAndEmail(User user, String name, String email) throws Exception {
         runAuthenticatedOperation(user, () -> {
-            userProfileService.updateProfileField(FIELD_NAME, name);
-            userProfileService.updateProfileField(FIELD_EMAIL, email);
+            tripperUserProfileService.updateProfileField(FIELD_NAME, name);
+            tripperUserProfileService.updateProfileField(FIELD_EMAIL, email);
         });
     }
 
@@ -126,5 +132,22 @@ public class TripperE2E extends BaseServiceTest {
         Persistor<TripPlan> planPers = InMemoryPersistor.forType(TripPlan.class);
         TripPlanPersistor tripPlanPersistor = new DefaultTripPlanPersistor(planPers);
         addToContext(TripPlanPersistor.class, tripPlanPersistor);
+    }
+
+    private void setupUserProfileService() throws Exception {
+        setupProfilePersistor();
+        setupProfileTemplate();
+        UserProfileService userProfileService = registerService(UserProfileService.class);
+        addToContext(UserProfileService.class, userProfileService);
+    }
+
+    private void setupUserGroupService() throws Exception {
+        Persistor<Group> groupPers = InMemoryPersistor.forType(Group.class);
+        Persistor<GroupMembership> memPers = InMemoryPersistor.forType(GroupMembership.class);
+        GroupPersistor groupPersistor = new DefaultGroupPersistor(groupPers, memPers);
+        addToContext(GroupPersistor.class, groupPersistor);
+
+        UserGroupService userGroupService = registerService(UserGroupService.class);
+        addToContext(UserGroupService.class, userGroupService);
     }
 }

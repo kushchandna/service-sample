@@ -60,6 +60,7 @@ public class TripPlannerService extends BaseService {
     protected void processContext() {
         checkContextHasValueFor(TripPlanPersistor.class);
         checkContextHasValueFor(UserGroupService.class);
+        addIfDoesNotExist(Clock.class, Clock.systemUTC());
     }
 
     private UserGroupService getUserGroupService() {
