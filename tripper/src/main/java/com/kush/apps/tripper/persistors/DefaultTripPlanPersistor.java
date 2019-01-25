@@ -16,9 +16,9 @@ public class DefaultTripPlanPersistor extends DelegatingPersistor<TripPlan> impl
     }
 
     @Override
-    public TripPlan createTripPlan(Identifier ownerUserId, Group tripGroup, ZonedDateTime creationTime)
+    public TripPlan createTripPlan(String name, Identifier ownerUserId, Group tripGroup, ZonedDateTime creationTime)
             throws PersistorOperationFailedException {
-        TripPlan tripPlan = new TripPlan(ownerUserId, tripGroup, creationTime);
+        TripPlan tripPlan = new TripPlan(name, ownerUserId, tripGroup, creationTime);
         return save(tripPlan);
     }
 }

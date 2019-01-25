@@ -105,7 +105,7 @@ public class TripperE2E extends BaseServiceTest {
     }
 
     private TripPlan createTripPlan() throws PersistorOperationFailedException {
-        return tripperPlanningService.createTripPlan();
+        return tripperPlanningService.createTripPlan("First Trip");
     }
 
     private void updateNameAndEmail(User user, String name, String email) throws Exception {

@@ -10,6 +10,6 @@ import com.kush.utils.id.Identifier;
 
 public interface TripPlanPersistor extends Persistor<TripPlan> {
 
-    TripPlan createTripPlan(Identifier ownerUserId, Group tripGroup, ZonedDateTime creationTime)
+    TripPlan createTripPlan(String name, Identifier ownerUserId, Group tripGroup, ZonedDateTime creationTime)
             throws PersistorOperationFailedException;
 }

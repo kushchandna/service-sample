@@ -25,7 +25,7 @@ public class TripperPlanningService extends BaseService {
 
     @ServiceMethod
     @AuthenticationRequired
-    public TripPlan createTripPlan() throws PersistorOperationFailedException {
+    public TripPlan createTripPlan(String name) throws PersistorOperationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
         Clock clock = getInstance(Clock.class);
         ZonedDateTime currentTime = ZonedDateTime.now(clock);
@@ -34,7 +34,7 @@ public class TripperPlanningService extends BaseService {
         Group tripGroup = userGroupService.createGroup("<trip-group>");
 
         TripPlanPersistor tripPlanPersistor = getTripPlanPersistor();
-        return tripPlanPersistor.createTripPlan(currentUserId, tripGroup, currentTime);
+        return tripPlanPersistor.createTripPlan(name, currentUserId, tripGroup, currentTime);
     }
 
     @ServiceMethod
