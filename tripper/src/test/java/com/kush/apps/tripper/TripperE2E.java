@@ -1,8 +1,12 @@
 package com.kush.apps.tripper;
 
+import static com.kush.apps.tripper.api.Duration.duration;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
+import com.kush.apps.tripper.api.Duration;
 import com.kush.apps.tripper.api.TripPlan;
 import com.kush.apps.tripper.persistors.DefaultTripPlanPersistor;
 import com.kush.apps.tripper.persistors.TripPlanPersistor;
@@ -47,6 +52,10 @@ import com.kush.utils.exceptions.ValidationFailedException;
 import com.kush.utils.id.Identifier;
 
 public class TripperE2E extends BaseServiceTest {
+
+    private static final DateTimeFormatter FORMATTER = new DateTimeFormatterBuilder()
+        .appendPattern("yyyy-MM-dd HH:mm")
+        .toFormatter();
 
     private static final String FIELD_EMAIL = "email";
     private static final String FIELD_NAME = "name";
@@ -107,6 +116,20 @@ public class TripperE2E extends BaseServiceTest {
             List<TripPlan> tripPlans = tripperPlanningService.getTripPlans();
             List<Message> messages = tripperMessagingService.getMessages(tripPlans.get(0).getId());
             System.out.println("First User got messages " + messages);
+        });
+
+        runAuthenticatedOperation(firstUser, () -> {
+            Duration suggestion1 = duration()
+                .from(LocalDateTime.parse("2019-02-01 22:00", FORMATTER))
+                .to(LocalDateTime.parse("2019-02-05 21:00", FORMATTER))
+                .build();
+            tripperPlanningService.proposeDuration(suggestion1);
+
+            Duration suggestion2 = duration()
+                .from(LocalDateTime.parse("2019-02-08 22:00", FORMATTER))
+                .to(LocalDateTime.parse("2019-02-12 21:00", FORMATTER))
+                .build();
+            tripperPlanningService.proposeDuration(suggestion2);
         });
 
         TimeUnit.SECONDS.sleep(1);

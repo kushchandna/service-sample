@@ -7,6 +7,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 
+import com.kush.apps.tripper.api.Duration;
 import com.kush.apps.tripper.api.TripPlan;
 import com.kush.apps.tripper.persistors.TripPlanPersistor;
 import com.kush.lib.group.entities.Group;
@@ -66,6 +67,11 @@ public class TripperPlanningService extends BaseService {
         List<Identifier> groupIds = groups.stream().map(g -> g.getId()).collect(toList());
         TripPlanPersistor tripPlanPersistor = getTripPlanPersistor();
         return tripPlanPersistor.fetch(plan -> groupIds.contains(plan.getTripGroup().getId()));
+    }
+
+    @ServiceMethod
+    @AuthenticationRequired
+    public void proposeDuration(Duration duration) {
     }
 
     @Override

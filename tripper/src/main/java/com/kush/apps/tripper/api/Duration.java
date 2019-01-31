@@ -3,6 +3,7 @@ package com.kush.apps.tripper.api;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class Duration {
@@ -10,9 +11,15 @@ public class Duration {
     private final LocalDateTime start;
     private final LocalDateTime end;
 
-    public Duration(LocalDateTime start, LocalDateTime end) {
+    private Duration(LocalDateTime start, LocalDateTime end) {
+        Objects.requireNonNull(start, "start");
+        Objects.requireNonNull(end, "end");
         this.start = start;
         this.end = end;
+    }
+
+    public static Builder duration() {
+        return new Builder();
     }
 
     public LocalDateTime getStart() {
@@ -40,5 +47,28 @@ public class Duration {
             .append(end.format(formatter))
             .append(" (").append(getDays()).append(" days)")
             .toString();
+    }
+
+    public static class Builder {
+
+        private LocalDateTime start;
+        private LocalDateTime end;
+
+        private Builder() {
+        }
+
+        public Builder from(LocalDateTime start) {
+            this.start = start;
+            return this;
+        }
+
+        public Builder to(LocalDateTime end) {
+            this.end = end;
+            return this;
+        }
+
+        public Duration build() {
+            return new Duration(start, end);
+        }
     }
 }
