@@ -103,15 +103,6 @@ public class TripperE2E extends BaseServiceTest {
             tripperMessagingService.sendMessage(tripPlans.get(0).getId(), new TextContent("Test Message"));
         });
 
-        runAuthenticatedOperation(secondUser, () -> {
-            tripperMessagingService.registerMessageHandler((msg) -> {
-                System.out.println("Second User got a " + msg);
-            });
-            List<TripPlan> tripPlans = tripperPlanningService.getTripPlans();
-            List<Message> messages = tripperMessagingService.getMessages(tripPlans.get(0).getId());
-            System.out.println(messages);
-        });
-
         runAuthenticatedOperation(firstUser, () -> {
             List<TripPlan> tripPlans = tripperPlanningService.getTripPlans();
             List<Message> messages = tripperMessagingService.getMessages(tripPlans.get(0).getId());
