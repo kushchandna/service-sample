@@ -33,7 +33,7 @@ public class SampleServerLauncher {
         ResolutionRequestsReceiver serviceRequestReceiver = new SocketBasedResolutionRequestsProcessor(executor, PORT);
 
         SignalEmitter signalEmitter = SignalEmitters.newAsyncEmitter(executor, executor);
-        RemoteSignalSpace signalSpace = new RemoteSignalSpace(executor, signalEmitter);
+        RemoteSignalSpace signalSpace = new RemoteSignalSpace(signalEmitter);
         serviceRequestReceiver.addResolver(SignalHandlerRegistrationRequest.class, signalSpace);
 
         ApplicationServer server = new ApplicationServer(serviceRequestReceiver);
