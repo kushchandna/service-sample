@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -89,8 +90,17 @@ public class TripperE2E extends BaseServiceTest {
             Map<String, Set<Object>> userFilter = ImmutableMap.of(FIELD_EMAIL,
                     new HashSet<>(asList(EMAILS_IN_CONTACTS)));
             addTripMembers(tripPlan, userFilter);
+        });
 
-            tripperMessagingService.sendMessage(tripPlan.getId(), new TextContent("Test Message"));
+        runAuthenticatedOperation(secondUser, () -> {
+            tripperMessagingService.registerMessageHandler((msg) -> {
+                System.out.println("Second User got message " + msg);
+            });
+        });
+
+        runAuthenticatedOperation(thirdUser, () -> {
+            List<TripPlan> tripPlans = tripperPlanningService.getTripPlans();
+            tripperMessagingService.sendMessage(tripPlans.get(0).getId(), new TextContent("Test Message"));
         });
 
         runAuthenticatedOperation(secondUser, () -> {
@@ -101,6 +111,14 @@ public class TripperE2E extends BaseServiceTest {
             List<Message> messages = tripperMessagingService.getMessages(tripPlans.get(0).getId());
             System.out.println(messages);
         });
+
+        runAuthenticatedOperation(firstUser, () -> {
+            List<TripPlan> tripPlans = tripperPlanningService.getTripPlans();
+            List<Message> messages = tripperMessagingService.getMessages(tripPlans.get(0).getId());
+            System.out.println("First User got messages " + messages);
+        });
+
+        TimeUnit.SECONDS.sleep(1);
     }
 
     private void addTripMembers(TripPlan tripPlan, Map<String, Set<Object>> userFilter)

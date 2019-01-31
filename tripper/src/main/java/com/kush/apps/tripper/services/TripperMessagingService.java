@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Set;
 
 import com.kush.apps.tripper.api.TripPlan;
+import com.kush.apps.tripper.api.TripPlanGroupBasedDestination;
 import com.kush.apps.tripper.persistors.TripPlanPersistor;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
 import com.kush.messaging.content.Content;
 import com.kush.messaging.destination.Destination;
-import com.kush.messaging.destination.GroupIdBasedDestination;
 import com.kush.messaging.message.Message;
 import com.kush.messaging.push.MessageHandler;
 import com.kush.messaging.services.MessagingService;
@@ -24,8 +24,8 @@ public class TripperMessagingService extends BaseService {
     @AuthenticationRequired
     @ServiceMethod
     public Message sendMessage(Identifier tripPlanId, Content content) throws PersistorOperationFailedException {
-        Identifier tripGroupId = getTripPlanGroupId(tripPlanId);
-        Set<Destination> destinations = singleton(new GroupIdBasedDestination(tripGroupId));
+        TripPlan tripPlan = getTripPlan(tripPlanId);
+        Set<Destination> destinations = singleton(new TripPlanGroupBasedDestination(tripPlan));
         return getMessagingService().sendMessage(content, destinations);
     }
 
@@ -62,8 +62,12 @@ public class TripperMessagingService extends BaseService {
     }
 
     private Identifier getTripPlanGroupId(Identifier tripPlanId) throws PersistorOperationFailedException {
-        TripPlanPersistor tripPlanPersistor = getTripPlanPersistor();
-        TripPlan tripPlan = tripPlanPersistor.fetch(tripPlanId);
+        TripPlan tripPlan = getTripPlan(tripPlanId);
         return tripPlan.getTripGroup().getId();
+    }
+
+    private TripPlan getTripPlan(Identifier tripPlanId) throws PersistorOperationFailedException {
+        TripPlanPersistor tripPlanPersistor = getTripPlanPersistor();
+        return tripPlanPersistor.fetch(tripPlanId);
     }
 }
