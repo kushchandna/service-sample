@@ -108,13 +108,13 @@ public class TripperE2E extends BaseServiceTest {
         });
 
         runAuthenticatedOperation(thirdUser, () -> {
-            List<TripPlan> tripPlans = tripperPlanningService.getTripPlans();
-            tripperMessagingService.sendMessage(tripPlans.get(0).getId(), new TextContent("Test Message"));
+            TripPlan tripPlan = fetchFirstTripPlan();
+            tripperMessagingService.sendMessage(tripPlan.getId(), new TextContent("Test Message"));
         });
 
         runAuthenticatedOperation(firstUser, () -> {
-            List<TripPlan> tripPlans = tripperPlanningService.getTripPlans();
-            List<Message> messages = tripperMessagingService.getMessages(tripPlans.get(0).getId());
+            TripPlan tripPlan = fetchFirstTripPlan();
+            List<Message> messages = tripperMessagingService.getMessages(tripPlan.getId());
             System.out.println("First User got messages " + messages);
         });
 
@@ -133,6 +133,12 @@ public class TripperE2E extends BaseServiceTest {
         });
 
         TimeUnit.SECONDS.sleep(1);
+    }
+
+    private TripPlan fetchFirstTripPlan() throws PersistorOperationFailedException {
+        List<TripPlan> tripPlans = tripperPlanningService.getTripPlans();
+        TripPlan tripPlan = tripPlans.get(0);
+        return tripPlan;
     }
 
     private void addTripMembers(TripPlan tripPlan, Map<String, Set<Object>> userFilter)
