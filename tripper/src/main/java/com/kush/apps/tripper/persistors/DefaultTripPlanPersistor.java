@@ -7,6 +7,7 @@ import com.kush.lib.group.entities.Group;
 import com.kush.lib.persistence.api.DelegatingPersistor;
 import com.kush.lib.persistence.api.Persistor;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
+import com.kush.lib.questionnaire.PreferenceQuestion;
 import com.kush.utils.id.Identifier;
 
 public class DefaultTripPlanPersistor extends DelegatingPersistor<TripPlan> implements TripPlanPersistor {
@@ -16,9 +17,9 @@ public class DefaultTripPlanPersistor extends DelegatingPersistor<TripPlan> impl
     }
 
     @Override
-    public TripPlan createTripPlan(String name, Identifier ownerUserId, Group tripGroup, ZonedDateTime creationTime)
-            throws PersistorOperationFailedException {
-        TripPlan tripPlan = new TripPlan(name, ownerUserId, tripGroup, creationTime);
+    public TripPlan createTripPlan(String name, Identifier ownerUserId, Group tripGroup, ZonedDateTime creationTime,
+            PreferenceQuestion durationPreferenceQuestion) throws PersistorOperationFailedException {
+        TripPlan tripPlan = new TripPlan(name, ownerUserId, tripGroup, creationTime, durationPreferenceQuestion);
         return save(tripPlan);
     }
 }

@@ -33,6 +33,12 @@ import com.kush.lib.profile.persistors.ProfilePersistor;
 import com.kush.lib.profile.services.UserProfileService;
 import com.kush.lib.profile.template.ProfileTemplate;
 import com.kush.lib.profile.template.ProfileTemplateBuilder;
+import com.kush.lib.questionnaire.DefaultPreferenceQuestionPersistor;
+import com.kush.lib.questionnaire.PreferenceAnswer;
+import com.kush.lib.questionnaire.PreferenceOption;
+import com.kush.lib.questionnaire.PreferenceQuestion;
+import com.kush.lib.questionnaire.PreferenceQuestionPersistor;
+import com.kush.lib.questionnaire.PreferenceQuestionService;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.messaging.message.Message;
 import com.kush.messaging.persistors.DefaultMessagePersistor;
@@ -63,6 +69,8 @@ public class BaseTripperE2E extends BaseServiceTest {
     @Before
     public void setup() throws Exception {
         setupUserGroupService();
+        setupPreferenceQuestionService();
+
         setupTripPlannerPersistor();
         tripperPlanningService = registerService(TripperPlanningService.class);
 
@@ -151,5 +159,14 @@ public class BaseTripperE2E extends BaseServiceTest {
         MessagePersistor messagePersistor = new DefaultMessagePersistor(InMemoryPersistor.forType(Message.class));
         addToContext(MessagePersistor.class, messagePersistor);
         registerService(MessagingService.class);
+    }
+
+    private void setupPreferenceQuestionService() throws Exception {
+        Persistor<PreferenceQuestion> delegatePrefQuestPersistor = InMemoryPersistor.forType(PreferenceQuestion.class);
+        Persistor<PreferenceOption> optionPersistor = InMemoryPersistor.forType(PreferenceOption.class);
+        Persistor<PreferenceAnswer> answerPersistor = InMemoryPersistor.forType(PreferenceAnswer.class);
+        addToContext(PreferenceQuestionPersistor.class,
+                new DefaultPreferenceQuestionPersistor(delegatePrefQuestPersistor, optionPersistor, answerPersistor));
+        registerService(PreferenceQuestionService.class);
     }
 }

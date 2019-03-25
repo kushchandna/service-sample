@@ -8,12 +8,15 @@ import java.util.List;
 import java.util.Set;
 
 import com.kush.apps.tripper.api.Duration;
+import com.kush.apps.tripper.api.DurationToTextAdapter;
 import com.kush.apps.tripper.api.TripPlan;
 import com.kush.apps.tripper.persistors.TripPlanPersistor;
 import com.kush.lib.group.entities.Group;
 import com.kush.lib.group.entities.GroupMembership;
 import com.kush.lib.group.service.UserGroupService;
 import com.kush.lib.persistence.api.PersistorOperationFailedException;
+import com.kush.lib.questionnaire.PreferenceQuestion;
+import com.kush.lib.questionnaire.PreferenceQuestionService;
 import com.kush.service.BaseService;
 import com.kush.service.annotations.Service;
 import com.kush.service.annotations.ServiceMethod;
@@ -34,8 +37,11 @@ public class TripperPlanningService extends BaseService {
         UserGroupService userGroupService = getUserGroupService();
         Group tripGroup = userGroupService.createGroup("<trip-group>");
 
+        PreferenceQuestionService questionService = getPreferenceQuestionService();
+        PreferenceQuestion durationQuestion = questionService.createQuestion("Preferred Duration?");
+
         TripPlanPersistor tripPlanPersistor = getTripPlanPersistor();
-        return tripPlanPersistor.createTripPlan(name, currentUserId, tripGroup, currentTime);
+        return tripPlanPersistor.createTripPlan(name, currentUserId, tripGroup, currentTime, durationQuestion);
     }
 
     @ServiceMethod
@@ -44,8 +50,7 @@ public class TripperPlanningService extends BaseService {
             throws PersistorOperationFailedException, ValidationFailedException {
         Identifier currentUserId = getCurrentUser().getId();
 
-        TripPlanPersistor tripPlanPersistor = getTripPlanPersistor();
-        TripPlan tripPlan = tripPlanPersistor.fetch(tripPlanId);
+        TripPlan tripPlan = fetchTripPlan(tripPlanId);
 
         Group tripGroup = tripPlan.getTripGroup();
         UserGroupService userGroupService = getUserGroupService();
@@ -71,14 +76,27 @@ public class TripperPlanningService extends BaseService {
 
     @ServiceMethod
     @AuthenticationRequired
-    public void proposeDuration(Duration duration) {
+    public void proposeDuration(Identifier tripPlanId, Duration duration) throws PersistorOperationFailedException {
+        TripPlan tripPlan = fetchTripPlan(tripPlanId);
+        PreferenceQuestionService questionService = getPreferenceQuestionService();
+        DurationToTextAdapter toTextAdapter = getInstance(DurationToTextAdapter.class);
+        String content = toTextAdapter.toText(duration);
+        questionService.addOption(tripPlan.getDurationPreferenceQuestion().getId(), content);
     }
 
     @Override
     protected void processContext() {
         checkContextHasValueFor(TripPlanPersistor.class);
         checkContextHasValueFor(UserGroupService.class);
+        checkContextHasValueFor(PreferenceQuestionService.class);
         addIfDoesNotExist(Clock.class, Clock.systemUTC());
+        addIfDoesNotExist(DurationToTextAdapter.class, new DurationToTextAdapter() {
+
+            @Override
+            public String toText(Duration duration) {
+                return duration.toString();
+            }
+        });
     }
 
     private UserGroupService getUserGroupService() {
@@ -87,5 +105,14 @@ public class TripperPlanningService extends BaseService {
 
     private TripPlanPersistor getTripPlanPersistor() {
         return getInstance(TripPlanPersistor.class);
+    }
+
+    private PreferenceQuestionService getPreferenceQuestionService() {
+        return getInstance(PreferenceQuestionService.class);
+    }
+
+    private TripPlan fetchTripPlan(Identifier tripPlanId) throws PersistorOperationFailedException {
+        TripPlanPersistor tripPlanPersistor = getTripPlanPersistor();
+        return tripPlanPersistor.fetch(tripPlanId);
     }
 }

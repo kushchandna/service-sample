@@ -57,17 +57,19 @@ public class TripperE2E extends BaseTripperE2E {
         });
 
         runAuthenticatedOperation(firstUser, () -> {
+            TripPlan tripPlan = fetchFirstTripPlan();
+
             Duration suggestion1 = duration()
                 .from(LocalDateTime.parse("2019-02-01 22:00", FORMATTER))
                 .to(LocalDateTime.parse("2019-02-05 21:00", FORMATTER))
                 .build();
-            tripperPlanningService.proposeDuration(suggestion1);
+            tripperPlanningService.proposeDuration(tripPlan.getId(), suggestion1);
 
             Duration suggestion2 = duration()
                 .from(LocalDateTime.parse("2019-02-08 22:00", FORMATTER))
                 .to(LocalDateTime.parse("2019-02-12 21:00", FORMATTER))
                 .build();
-            tripperPlanningService.proposeDuration(suggestion2);
+            tripperPlanningService.proposeDuration(tripPlan.getId(), suggestion2);
         });
 
         TimeUnit.SECONDS.sleep(1);
