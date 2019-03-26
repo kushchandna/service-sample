@@ -8,13 +8,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
 import com.kush.apps.tripper.api.Duration;
 import com.kush.apps.tripper.api.TripPlan;
+import com.kush.lib.questionnaire.Preference;
+import com.kush.lib.questionnaire.PreferenceAnswer;
 import com.kush.lib.service.remoting.auth.User;
 import com.kush.messaging.content.TextContent;
 import com.kush.messaging.message.Message;
@@ -63,15 +64,35 @@ public class TripperE2E extends BaseTripperE2E {
                 .from(LocalDateTime.parse("2019-02-01 22:00", FORMATTER))
                 .to(LocalDateTime.parse("2019-02-05 21:00", FORMATTER))
                 .build();
-            tripperPlanningService.proposeDuration(tripPlan.getId(), suggestion1);
+            tripperPlanningService.proposeDuration(tripPlan.getId(), suggestion1, Preference.PREFERRED);
 
             Duration suggestion2 = duration()
                 .from(LocalDateTime.parse("2019-02-08 22:00", FORMATTER))
                 .to(LocalDateTime.parse("2019-02-12 21:00", FORMATTER))
                 .build();
-            tripperPlanningService.proposeDuration(tripPlan.getId(), suggestion2);
+            tripperPlanningService.proposeDuration(tripPlan.getId(), suggestion2, Preference.NEUTRAL);
         });
 
-        TimeUnit.SECONDS.sleep(1);
+        runAuthenticatedOperation(secondUser, () -> {
+            TripPlan tripPlan = fetchFirstTripPlan();
+
+            Duration suggestion = duration()
+                .from(LocalDateTime.parse("2019-02-08 22:00", FORMATTER))
+                .to(LocalDateTime.parse("2019-02-12 21:00", FORMATTER))
+                .build();
+            tripperPlanningService.proposeDuration(tripPlan.getId(), suggestion, Preference.PREFERRED);
+
+            Duration rejected = duration()
+                .from(LocalDateTime.parse("2019-02-01 22:00", FORMATTER))
+                .to(LocalDateTime.parse("2019-02-05 21:00", FORMATTER))
+                .build();
+            tripperPlanningService.proposeDuration(tripPlan.getId(), rejected, Preference.REJECTED);
+        });
+
+        runAuthenticatedOperation(thirdUser, () -> {
+            TripPlan tripPlan = fetchFirstTripPlan();
+            Map<Preference, List<PreferenceAnswer>> preferences = tripperPlanningService.getDurationPreferences(tripPlan.getId());
+            System.out.println(preferences);
+        });
     }
 }
