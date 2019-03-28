@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
@@ -21,6 +23,8 @@ import com.kush.messaging.content.TextContent;
 import com.kush.messaging.message.Message;
 
 public class TripperE2E extends BaseTripperE2E {
+
+    private static final Logger LOGGER = LogManager.getFormatterLogger(TripperE2E.class);
 
     @Test
     public void e2e() throws Exception {
@@ -42,7 +46,7 @@ public class TripperE2E extends BaseTripperE2E {
 
         runAuthenticatedOperation(secondUser, () -> {
             tripperMessagingService.registerMessageHandler((msg) -> {
-                System.out.println("Second User got message " + msg);
+                LOGGER.info("Second User got message %s", msg);
             });
         });
 
@@ -54,7 +58,7 @@ public class TripperE2E extends BaseTripperE2E {
         runAuthenticatedOperation(firstUser, () -> {
             TripPlan tripPlan = fetchFirstTripPlan();
             List<Message> messages = tripperMessagingService.getMessages(tripPlan.getId());
-            System.out.println("First User got messages " + messages);
+            LOGGER.info("First User got messages %s", messages);
         });
 
         runAuthenticatedOperation(firstUser, () -> {
@@ -92,7 +96,7 @@ public class TripperE2E extends BaseTripperE2E {
         runAuthenticatedOperation(thirdUser, () -> {
             TripPlan tripPlan = fetchFirstTripPlan();
             Map<Preference, List<PreferenceAnswer>> preferences = tripperPlanningService.getDurationPreferences(tripPlan.getId());
-            System.out.println(preferences);
+            LOGGER.info(preferences);
         });
     }
 }
