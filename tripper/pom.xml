@@ -8,12 +8,5 @@
 	<groupId>com.kush.apps</groupId>
 	<artifactId>tripper</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
 
-  <modules>
-    <module>commons</module>
-    <module>users</module>
-    <module>usergroups</module>
-    <module>app</module>
-  </modules>
 </project>
