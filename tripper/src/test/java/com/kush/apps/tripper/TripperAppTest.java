@@ -14,15 +14,15 @@ import org.junit.Test;
 import com.kush.lib.group.entities.DefaultGroupPersistor;
 import com.kush.lib.group.entities.Group;
 import com.kush.lib.group.entities.GroupMembership;
-import com.kush.lib.group.persistors.GroupPersistor;
+import com.kush.lib.group.persistors.GroupPersister;
 import com.kush.lib.group.service.UserGroupService;
-import com.kush.lib.persistence.api.Persistor;
-import com.kush.lib.persistence.helpers.InMemoryPersistor;
+import com.kush.lib.persistence.api.Persister;
+import com.kush.lib.persistence.helpers.InMemoryPersister;
 import com.kush.lib.profile.entities.DefaultProfilePersistor;
 import com.kush.lib.profile.entities.Profile;
 import com.kush.lib.profile.fields.Field;
 import com.kush.lib.profile.fields.Fields;
-import com.kush.lib.profile.persistors.ProfilePersistor;
+import com.kush.lib.profile.persistors.ProfilePersister;
 import com.kush.lib.profile.services.UserProfileService;
 import com.kush.lib.profile.template.ProfileTemplate;
 import com.kush.lib.profile.template.ProfileTemplateBuilder;
@@ -89,8 +89,8 @@ public class TripperAppTest extends BaseServiceTest {
     }
 
     private void setupProfilePersistor() {
-        Persistor<Profile> delegate = InMemoryPersistor.forType(Profile.class);
-        addToContext(ProfilePersistor.class, new DefaultProfilePersistor(delegate));
+        Persister<Profile> delegate = InMemoryPersister.forType(Profile.class);
+        addToContext(ProfilePersister.class, new DefaultProfilePersistor(delegate));
     }
 
     private void setupProfileService() {
@@ -112,8 +112,8 @@ public class TripperAppTest extends BaseServiceTest {
     }
 
     private void setupGroupContext() {
-        Persistor<Group> delegateGroupPersistor = InMemoryPersistor.forType(Group.class);
-        Persistor<GroupMembership> delegateGroupMembershipPersistor = InMemoryPersistor.forType(GroupMembership.class);
-        addToContext(GroupPersistor.class, new DefaultGroupPersistor(delegateGroupPersistor, delegateGroupMembershipPersistor));
+        Persister<Group> delegateGroupPersistor = InMemoryPersister.forType(Group.class);
+        Persister<GroupMembership> delegateGroupMembershipPersistor = InMemoryPersister.forType(GroupMembership.class);
+        addToContext(GroupPersister.class, new DefaultGroupPersistor(delegateGroupPersistor, delegateGroupMembershipPersistor));
     }
 }
