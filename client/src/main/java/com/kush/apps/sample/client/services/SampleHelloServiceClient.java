@@ -1,7 +1,7 @@
 package com.kush.apps.sample.client.services;
 
+import com.kush.commons.async.Response;
 import com.kush.serviceclient.ServiceClient;
-import com.kush.utils.async.Response;
 
 public class SampleHelloServiceClient extends ServiceClient {
 
